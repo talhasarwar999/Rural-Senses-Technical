@@ -18,26 +18,35 @@ export const login = (username, password) => async (dispatch) => {
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    };
+
     var bodyFormData = new FormData();
     bodyFormData.append("username", username);
     bodyFormData.append("password", password);
-    bodyFormData.append("role", "Admin");
-    const { data } = await axios.post(ApiServer + "/user-signin", bodyFormData);
-    const token = data.access;
+    const { data } = await axios.post(
+      ApiServer + "/user-signin",
+      bodyFormData,
+      config
+    );
+    const token = data;
     console.log("tokenn", token);
-    const user = jwt(token);
-    console.log("userr", user);
+    // const user = jwt(token);
+    // console.log("userr", user);
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
     });
-    console.log("success", data);
+    console.log("success", data.role);
     localStorage.setItem("userInfo", JSON.stringify(data));
-    localStorage.setItem("user", JSON.stringify(user.user_id));
+    localStorage.setItem("user", JSON.stringify(data.role));
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAILURE,
-      payload: error.response.status, 
+      payload: error.response.status,
     });
     console.log(error.response.status);
   }
