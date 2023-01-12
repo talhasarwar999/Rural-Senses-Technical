@@ -1,6 +1,6 @@
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask import Flask, request, jsonify
-from flask_user import roles_required
+# from flask_user import roles_required
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 import hashlib
@@ -57,7 +57,7 @@ def user_signin():
 @app.route("/admin-dashboard", methods=["GET"])
 # @allowed_permissions(roles=['admin'])
 @jwt_required()
-@roles_required('Admin')
+# @roles_required('Admin')
 def admin_dashboard():
     current_user = get_jwt_identity()  # Get the identity of the current user
     user_from_db = db.users.find_one({'username': current_user})
