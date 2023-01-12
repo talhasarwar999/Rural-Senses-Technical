@@ -16,12 +16,12 @@ jwt = JWTManager(app)
 
 @app.route('/')
 def home():
-    # encrypted_password = hashlib.sha256("admin123".encode("utf-8")).hexdigest()
-    # db.users.insert_one({
-    #         "username":"admin",
-    #         "password":encrypted_password,
-    #         "role":"Admin"
-    #     })
+    encrypted_password = hashlib.sha256("admin123".encode("utf-8")).hexdigest()
+    db.users.insert_one({
+            "username":"admin",
+            "password":encrypted_password,
+            "role":"Admin"
+        })
     return jsonify("Hellow")
 
 
@@ -91,6 +91,40 @@ def public_official_dashboard():
         return jsonify({'profile': user_from_db})
     else:
         return jsonify({'msg': 'Public Official Profile not found'})
+
+
+
+@app.route("/add-user-by-admin", methods=["GET", "POST"])
+@jwt_required()
+def add_user_by_admin():
+    current_user = get_jwt_identity()  # Get the identity of the current user
+    user_from_db = db.users.find_one({'username': current_user})
+    if user_from_db and user_from_db['role'] == 'Admin':
+        if request.method == "POST":
+            user_details = request.get_json()  # store the json body request
+            new_user = db.users.insert_one({
+                    "username":user_details['username'],
+                    "password":user_details['password'],
+                    "role":user_details['role']
+                })
+            return "User Saved Successfully"
+
+
+
+# @app.route("/upload-data", methods=["GET", "POST"])
+# @jwt_required()
+# def upload_data():
+#     current_user = get_jwt_identity()  # Get the identity of the current user
+#     user_from_db = db.users.find_one({'username': current_user})
+#     if user_from_db and user_from_db['role'] == 'Admin':
+#         if request.method == "POST":
+#             user_details = request.get_json()  # store the json body request
+#             new_user = db.users.insert_one({
+#                     "username":user_details['username'],
+#                     "password":user_details['password'],
+#                     "role":user_details['role']
+#                 })
+#             return "User Saved Successfully"
 
 
 
