@@ -2,6 +2,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask import Flask, request, jsonify
 from flask_user import roles_required
 from flask_pymongo import PyMongo
+from flask_cors import CORS
 import hashlib
 import os
 
@@ -12,7 +13,7 @@ app.config['MONGO_URI'] = "mongodb+srv://talhasarwa999:ali2061989@cluster0.sy4ye
 mongo_client = PyMongo(app)
 db = mongo_client.db
 jwt = JWTManager(app)
-
+CORS(app)
 
 
 @app.route('/')
