@@ -21,11 +21,12 @@ export const login = (username, password) => async (dispatch) => {
     var bodyFormData = new FormData();
     bodyFormData.append("username", username);
     bodyFormData.append("password", password);
-    const { data } = await axios.post(ApiServer + "/api/token/", bodyFormData);
+    bodyFormData.append("role", "Admin");
+    const { data } = await axios.post(ApiServer + "/user-signin", bodyFormData);
     const token = data.access;
     console.log("tokenn", token);
     const user = jwt(token);
-    console.log("userr", user.user_id);
+    console.log("userr", user);
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
@@ -36,7 +37,7 @@ export const login = (username, password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAILURE,
-      payload: error.response.status,
+      payload: error.response.status, 
     });
     console.log(error.response.status);
   }

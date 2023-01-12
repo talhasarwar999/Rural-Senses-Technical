@@ -23,23 +23,23 @@ const Login = () => {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
   //USE-EFFECT
-    // useEffect(() => {
-    //   if (userInfo) {
-    //     navigate("/list");
-    //     window.location.reload();
-    //   } else {
-    //     navigate("/");
-    //   }
-    // }, [navigate, userInfo]);
+    useEffect(() => {
+      if (userInfo) {
+        navigate("/list");
+        window.location.reload();
+      } else {
+        navigate("/");
+      }
+    }, [navigate, userInfo]);
   //   //FUNCTION TO SEND USER_NAME AND PASSWORD TP BACKEND
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("userInfo", JSON.stringify("token"));
+    // localStorage.setItem("userInfo", JSON.stringify("token"));
     enqueueSnackbar("Logged In");
     navigate("/create_user");
-      window.location.reload();
-    //   dispatch(login(username, password));
+      // window.location.reload();
+      dispatch(login(username, password));
   };
 
   return (
