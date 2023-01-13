@@ -17,7 +17,7 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 //Components
 import DrawerComp from "./Drawer";
 //React-Router-Dom
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Logout } from "../../redux/actions/LoginActions";
 //Material UI Custom Styles
@@ -27,18 +27,18 @@ const StyledTab = styled(Tab)({
 //Dummy Data
 const tabs = [
   {
-    label: "List",
-    path: "/list",
+    label: "upload",
+    path: "/upload",
   },
   {
-    label: "Calories",
-    path: "/calories",
+    label: "Statics",
+    path: "/statics",
   },
 
-  //   {
-  //     label: "About Us",
-  //     path: "/aboutus",
-  //   },
+  {
+    label: "Messages",
+    path: "/message",
+  },
 ];
 //Header function
 const Header = () => {
@@ -64,7 +64,7 @@ const Header = () => {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <QuestionAnswerIcon/>
+            <QuestionAnswerIcon />
           </IconButton>
           <Typography
             component="div"
@@ -91,18 +91,18 @@ const Header = () => {
                   <StyledTab
                     key={label}
                     label={label}
-                    // component={Link}
-                    // to={path}
+                    component={Link}
+                    to={path}
                   />
                 ))}
               </Tabs>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  onClick={logoutHandler}
-                >
-                  Logout
-                </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={logoutHandler}
+              >
+                Logout
+              </Button>
             </>
           )}
         </Toolbar>

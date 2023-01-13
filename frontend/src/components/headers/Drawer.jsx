@@ -66,12 +66,17 @@ const DrawerComp = () => {
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
-              <StyledListItemText>List</StyledListItemText>
+              <StyledListItemText>upload</StyledListItemText>
             </ListItemIcon>
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
-              <StyledListItemText>Calories</StyledListItemText>
+              <StyledListItemText>Statics</StyledListItemText>
+            </ListItemIcon>
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemIcon>
+              <StyledListItemText>Messages</StyledListItemText>
             </ListItemIcon>
           </ListItemButton>
           {/* ))} */}

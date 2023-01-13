@@ -8,11 +8,14 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { userLoginReducer } from "./reducers/LoginReducers";
 import { CreateUserReducer } from "./reducers/CreateUserReducers";
 import { UploadDataReducer } from "./reducers/UploadDataReducers";
+import { ReviewStaticsReducer } from "./reducers/ReviewStaticsReducers";
+
 //CALLING REDUCERS
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   createUser: CreateUserReducer,
   uploadData: UploadDataReducer,
+  reviewStatics: ReviewStaticsReducer,
 });
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
