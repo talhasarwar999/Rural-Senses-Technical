@@ -1,0 +1,5 @@
+//Create User Constants
+
+export const CREATE_USER_REQUEST = "CREATE_USER_REQUEST";
+export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
+export const CREATE_USER_FAILURE = "CREATE_USER_FAILURE";

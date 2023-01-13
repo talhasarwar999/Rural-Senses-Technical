@@ -6,11 +6,11 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 //REDUCERS
 import { userLoginReducer } from "./reducers/LoginReducers";
-
+import { CreateUserReducer } from "./reducers/CreateUserReducers";
 //CALLING REDUCERS
 const reducer = combineReducers({
   userLogin: userLoginReducer,
- 
+  createUser: CreateUserReducer,
 });
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))

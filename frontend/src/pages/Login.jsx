@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 //REDUX
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../redux/actions/LoginActions";
 //REACT-ROUTER-DOM
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 
 //MAIN FORM ARROW FUNCTION
 const Login = () => {
@@ -15,31 +15,40 @@ const Login = () => {
   //STATES
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [social] = useState(
+    localStorage.getItem("user") === '"CommunitySocialWorker"' ? true : null
+  );
+  const [admin] = useState(
+    localStorage.getItem("user") === '"Admin"' ? true : null
+  );
+  const [official] = useState(
+    localStorage.getItem("user") === '"PublicOfficial"' ? true : null
+  );
   // NAVIGATOR
   let navigate = useNavigate();
   //REDUX
-    const dispatch = useDispatch();
-    //CHECKING WHETHER USER IS AUTHENTICATED
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
-  //USE-EFFECT
-    // useEffect(() => {
-    //   if (userInfo) {
-    //     navigate("/list");
-    //     window.location.reload();
-    //   } else {
-    //     navigate("/");
-    //   }
-    // }, [navigate, userInfo]);
-  //   //FUNCTION TO SEND USER_NAME AND PASSWORD TP BACKEND
-  
+  const dispatch = useDispatch();
+  //CHECKING WHETHER USER IS AUTHENTICATED
+  useEffect(() => {
+    if (admin) {
+      navigate("/create_user");
+    } else if (social) {
+      navigate("/upload");
+      enqueueSnackbar("Logged In");
+    } else if (official) {
+      navigate("/statics");
+      enqueueSnackbar("Logged In");
+    } else {
+      navigate("/");
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // localStorage.setItem("userInfo", JSON.stringify("token"));
     enqueueSnackbar("Logged In");
-    // navigate("/create_user");
-      // window.location.reload();
-      dispatch(login(username, password));
+    dispatch(login(username, password)).then(() => {
+      window.location.reload();
+    });
   };
 
   return (
