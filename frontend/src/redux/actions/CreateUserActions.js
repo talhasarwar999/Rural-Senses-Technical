@@ -2,9 +2,7 @@
 import axios from "axios";
 //COMMON API
 import { ApiServer } from "../../ApiConstant";
-//JWT-DECODER
-// import jwt from "jwt-decode";
-//LOGIN CONSTANTS
+//Create User CONSTANTS
 import {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
