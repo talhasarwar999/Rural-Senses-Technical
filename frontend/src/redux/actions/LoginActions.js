@@ -28,7 +28,7 @@ export const login = (username, password) => async (dispatch) => {
     const { data } = await axios.post(
       ApiServer + "/user-signin",
       bodyFormData,
-      config
+      config,
     );
     const token = data;
     console.log("tokenn", token);

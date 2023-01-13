@@ -34,10 +34,8 @@ const Login = () => {
       navigate("/create_user");
     } else if (social) {
       navigate("/upload");
-      enqueueSnackbar("Logged In");
     } else if (official) {
       navigate("/statics");
-      enqueueSnackbar("Logged In");
     } else {
       navigate("/");
     }
