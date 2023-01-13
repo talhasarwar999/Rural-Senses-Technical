@@ -2,8 +2,6 @@
 import axios from "axios";
 //COMMON API
 import { ApiServer } from "../../ApiConstant";
-//JWT-DECODER
-import jwt from "jwt-decode";
 //LOGIN CONSTANTS
 import {
   USER_LOGIN_REQUEST,
@@ -34,8 +32,6 @@ export const login = (username, password) => async (dispatch) => {
     );
     const token = data;
     console.log("tokenn", token);
-    // const user = jwt(token);
-    // console.log("userr", user);
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,

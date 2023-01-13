@@ -1,44 +1,37 @@
-import React, {useState, useEffect} from 'react'
-import { Box, Button, FormControl, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 //REDUX
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/actions/LoginActions";
-//REACT-ROUTER-DOM
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { CreateUserAction } from "../redux/actions/CreateUserActions";
+import { useSnackbar } from "notistack";
 
 const CreateUser = () => {
+  const { enqueueSnackbar } = useSnackbar();
   //STATES
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-   const [role, setRole] = React.useState("");
+  const [role, setRole] = React.useState("");
 
-   const handleChange = (event) => {
-     setRole(event.target.value);
-   };
-  // NAVIGATOR
-  let navigate = useNavigate();
+  const handleChange = (event) => {
+    setRole(event.target.value);
+  };
   //REDUX
   const dispatch = useDispatch();
   //CHECKING WHETHER USER IS AUTHENTICATED
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-  //USE-EFFECT
-  // useEffect(() => {
-  //   if (userInfo) {
-  //     navigate("/list");
-  //     window.location.reload();
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, [navigate, userInfo]);
-  //   //FUNCTION TO SEND USER_NAME AND PASSWORD TP BACKEND
   const handleSubmit = (e) => {
     e.preventDefault();
-    // localStorage.setItem("userInfo", JSON.stringify("token"));
-    // navigate("/create_user");
-    // window.location.reload();
-    //   dispatch(login(username, password));
+    dispatch(CreateUserAction(username, password, role)).then(() => {
+      enqueueSnackbar("Created Successfully");
+    });
   };
   return (
     <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh" }}>
@@ -111,9 +104,10 @@ const CreateUser = () => {
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
               >
-                <MenuItem value={10}>Community Social Worker</MenuItem>
-                <MenuItem value={20}>Public Official</MenuItem>
-                <MenuItem value={30}>Admin</MenuItem>
+                <MenuItem value={"CommunitySocialWorker"}>
+                  Community Social Worker
+                </MenuItem>
+                <MenuItem value={"PublicOfficial"}>Public Official</MenuItem>
               </Select>
             </FormControl>
             <Typography
@@ -171,6 +165,6 @@ const CreateUser = () => {
       </Grid>
     </Box>
   );
-}
+};
 
-export default CreateUser
+export default CreateUser;
