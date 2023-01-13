@@ -1,12 +1,14 @@
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask import Flask, request, jsonify
-# from flask_user import roles_required
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
+from flask import Flask, request, jsonify, make_response
+from werkzeug.utils import secure_filename
 from flask_pymongo import PyMongo
 from flask_cors import CORS
+from functools import wraps
 import hashlib
 import os
 
 
+# Flask app configurations
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "e71e95b221e9c960889260960a244de2f0a9c7a8"
 app.config['MONGO_URI'] = "mongodb+srv://talhasarwa999:ali2061989@cluster0.sy4ye0l.mongodb.net/TestMongo?retryWrites=true&w=majority"
@@ -16,15 +18,6 @@ jwt = JWTManager(app)
 CORS(app)
 
 
-@app.route('/')
-def home():
-    # encrypted_password = hashlib.sha256("admin123".encode("utf-8")).hexdigest()
-    # db.users.insert_one({
-    #         "username":"admin",
-    #         "password":encrypted_password,
-    #         "role":"Admin"
-    #     })
-    return jsonify("Hellow")
 
 
 @app.route('/user-signin', methods=["POST"])
@@ -54,86 +47,94 @@ def user_signin():
 
 
 
+def check_role_and_authorize(user_role):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            verify_jwt_in_request()
+            current_user = get_jwt_identity()
+            user_from_db = db.users.find_one({'username': current_user})
+            if user_from_db and user_from_db['role'] == user_role:
+                return fn(*args, **kwargs)
+            else:
+                return jsonify(msg="bad request!"), 404
+        return decorator
+    return wrapper
+
+
+
 @app.route("/admin-dashboard", methods=["GET"])
-# @allowed_permissions(roles=['admin'])
 @jwt_required()
-# @roles_required('Admin')
+@check_role_and_authorize('Admin')
 def admin_dashboard():
-    current_user = get_jwt_identity()  # Get the identity of the current user
-    user_from_db = db.users.find_one({'username': current_user})
-    print(current_user)
-    # if user_from_db and user_from_db['role'] == 'Admin':
-    del user_from_db['_id'], user_from_db['password']  # delete data we don't want to return
-    return jsonify({'profile': user_from_db})
-    # else:
-    return jsonify({'msg': 'Profile not found'})
+    return jsonify({'msg': 'Profile Found Successfully Admin'}), 200
 
 
 
 @app.route("/community-dashboard", methods=["GET"])
 @jwt_required()
+@check_role_and_authorize('CommunitySocialWorker')
 def community_dashboard():
-    current_user = get_jwt_identity()  # Get the identity of the current user
-    user_from_db = db.users.find_one({'username': current_user})
-    print(current_user)
-    if user_from_db and user_from_db['role'] == 'CommunitySocialWorker':
-        del user_from_db['_id'], user_from_db['password']  # delete data we don't want to return
-        return jsonify({'profile': user_from_db})
-    else:
-        return jsonify({'msg': 'Community Profile not found'})
+    return jsonify({'msg': 'Profile Found Successfully Community Social Worker'}), 200
 
 
 
 @app.route("/public-official-dashboard", methods=["GET"])
 @jwt_required()
+@check_role_and_authorize('PublicOfficial')
 def public_official_dashboard():
-    current_user = get_jwt_identity()  # Get the identity of the current user
-    user_from_db = db.users.find_one({'username': current_user})
-    print(current_user)
-    if user_from_db and user_from_db['role'] == 'PublicOfficial':
-        del user_from_db['_id'], user_from_db['password']  # delete data we don't want to return
-        return jsonify({'profile': user_from_db})
-    else:
-        return jsonify({'msg': 'Public Official Profile not found'})
+    return jsonify({'msg': 'Profile Found Successfully Public Official'}), 200
 
 
 
 @app.route("/add-user-by-admin", methods=["GET", "POST"])
 @jwt_required()
+@check_role_and_authorize('PublicOfficial')
 def add_user_by_admin():
-    current_user = get_jwt_identity()  # Get the identity of the current user
-    user_from_db = db.users.find_one({'username': current_user})
-    if user_from_db and user_from_db['role'] == 'Admin':
-        if request.method == "POST":
-            user_details = request.get_json()  # store the json body request
-            encrpted_password = hashlib.sha256(user_details['password'].encode("utf-8")).hexdigest()
-            new_user = db.users.insert_one({
-                    "username":user_details['username'],
-                    "password":encrpted_password,
-                    "role":user_details['role']
-                })
-            return "User Saved Successfully"
+    if request.method == "POST":
+        user_details = request.get_json()  # store the json body request
+        encrpted_password = hashlib.sha256(user_details['password'].encode("utf-8")).hexdigest()
+        db.users.insert_one({
+                "username":user_details['username'],
+                "password":encrpted_password,
+                "role":user_details['role']
+            })
+        return "User Saved Successfully", 200
 
 
 
-@app.route("/upload-data-by-community", methods=["GET", "POST"])
+@app.route("/upload-data-by-community", methods=["POST"])
 @jwt_required()
+@check_role_and_authorize('CommunitySocialWorker')
 def upload_data_by_community():
-    current_user = get_jwt_identity()  # Get the identity of the current user
-    user_from_db = db.users.find_one({'username': current_user})
-    if user_from_db and user_from_db['role'] == 'CommunitySocialWorker':
-        if request.method == "POST":
-            user_details = request.get_json()  # store the json body request
-            new_user = db.community.insert_one({
-                    "community_name":user_details['community_name'],
-                    # "community_size":user_details['community_size'],
-                    # "csv_file":user_details['csv_file']
-                })
-            return "Data Uploaded Successfully"
+    if request.method == "POST":
+        current_user = get_jwt_identity()
+        community_name = request.form.get('community_name')
+        community_size = request.form.get('community_size')
+        print(community_size, community_name)
+        csv_file = request.files['csv_file']
+        filename = secure_filename(csv_file.filename)
+        print(filename)
+        db.community.insert_one({
+                "username":current_user,
+                "community_name":community_name,
+                "community_size":community_size,
+                "csv_file":filename,
+})
+        return "Data Uploaded Successfully", 200
 
+
+
+# @app.route("/review-statistics-by-community", methods=["GET"])
+# @jwt_required()
+# @check_role_and_authorize('CommunitySocialWorker')
+# def review_statistic_by_community():
+#     current_user = get_jwt_identity()
+#     get_data = db.community.find({"username":current_user})
+#     print(get_data,'ii')
+#     return "Data Uploaded Successfully", 200
 
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8000))
     app.run(debug=True, host='0.0.0.0', port=port)
-    # db = client.RuralSenseDatabase
