@@ -6,6 +6,8 @@ from flask_cors import CORS
 from functools import wraps
 import hashlib
 import os
+import pandas as pd
+import csv
 
 
 # Flask app configurations
@@ -111,28 +113,59 @@ def upload_data_by_community():
         current_user = get_jwt_identity()
         community_name = request.form.get('community_name')
         community_size = request.form.get('community_size')
-        print(community_size, community_name)
         csv_file = request.files['csv_file']
-        filename = secure_filename(csv_file.filename)
-        print(filename)
+
+        # check format
+        df = pd.read_csv(csv_file)
+        df.columns = map(str.lower, df.columns)
+        if 'what bothers you?' in df.columns and 'age' in df.columns:
+            pass
+        else:
+            return "CSV file is not specific format", 400
+
+        # convert csv to dict
+        convert_dict = df.to_dict()
+        new_dict = {}
+        if 0 in convert_dict['what bothers you?']:
+            new_dict['what bothers you'] = convert_dict['what bothers you?'][0]
+        else:
+            new_dict['what bothers you']  = convert_dict['what bothers you?']
+        if 0 in convert_dict['age']:
+            new_dict['age'] = convert_dict['age'][0]
+        else:
+            new_dict['age'] = convert_dict['age']
+
         db.community.insert_one({
                 "username":current_user,
                 "community_name":community_name,
                 "community_size":community_size,
-                "csv_file":filename,
-})
+                "csv_file":new_dict,
+        })
         return "Data Uploaded Successfully", 200
 
 
 
-# @app.route("/review-statistics-by-community", methods=["GET"])
-# @jwt_required()
-# @check_role_and_authorize('CommunitySocialWorker')
-# def review_statistic_by_community():
-#     current_user = get_jwt_identity()
-#     get_data = db.community.find({"username":current_user})
-#     print(get_data,'ii')
-#     return "Data Uploaded Successfully", 200
+
+@app.route("/review-statistics-by-community", methods=["GET"])
+@jwt_required()
+@check_role_and_authorize('CommunitySocialWorker')
+def review_statistic_by_community():
+    current_user = get_jwt_identity()
+    get_data = db.community.find({"username":current_user})
+    com_data = []
+    for data in get_data:
+        print(data.get('csv_file'))
+        # if data.get('csv_file')['what bothers you'].lower() == 'family' and data.get('csv_file')['age'].lower() < 25:
+
+
+        com_data.append({
+            "username": data.get('username'),
+            "community_name": data.get('community_name'),
+            "community_size": data.get('community_size'),
+            "csv_file": data.get('csv_file'),
+            "classifiation":"unknown"
+        })
+    return jsonify(com_data), 200
 
 
 if __name__ == "__main__":
