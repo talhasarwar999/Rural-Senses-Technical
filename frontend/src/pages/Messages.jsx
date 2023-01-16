@@ -31,7 +31,11 @@ function Messages() {
           <Typography
             component="h1"
             variant="h5"
-            sx={{ fontWeight: "bold", color: "white" }}
+            sx={{
+              fontWeight: "bold",
+              color: "white",
+              fontSize: { xs: 18, sm: 28 },
+            }}
           >
             Hello, Community Social Worker
           </Typography>
@@ -43,9 +47,10 @@ function Messages() {
               color: "white",
               textDecoration: "underline",
               my: 3,
+              fontSize: { xs: 18, sm: 28 },
             }}
           >
-           Welcome to Messages
+            Welcome to Messages
           </Typography>
         </Box>
       </Grid>

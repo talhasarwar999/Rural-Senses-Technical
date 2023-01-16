@@ -2,6 +2,8 @@
 import axios from "axios";
 //COMMON API
 import { ApiServer } from "../../ApiConstant";
+//Cookie
+import GetCookie from "../../hooks/getCookie";
 //LOGIN CONSTANTS
 import {
   UPLOAD_DATA_REQUEST,
@@ -9,6 +11,7 @@ import {
   UPLOAD_DATA_FAILURE,
 } from "../constants/UploadDataConstants";
 
+//Upload Data Action
 export const UploadDataAction =
   (community_name, community_size, csv_file) => async (dispatch) => {
     try {
@@ -19,7 +22,7 @@ export const UploadDataAction =
       const config = {
         headers: {
           Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("userInfo"))["access_token"]
+            JSON.parse(GetCookie("userInfo"))["access_token"]
           }`,
           "Content-Type": "multipart/form-data",
         },
@@ -34,7 +37,6 @@ export const UploadDataAction =
         },
         config
       );
-    
 
       dispatch({
         type: UPLOAD_DATA_SUCCESS,

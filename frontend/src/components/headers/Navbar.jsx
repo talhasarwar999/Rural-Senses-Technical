@@ -18,8 +18,14 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import DrawerComp from "./Drawer";
 //React-Router-Dom
 import { Link } from "react-router-dom";
+//REdux
 import { useDispatch } from "react-redux";
 import { Logout } from "../../redux/actions/LoginActions";
+//Cookie
+import GetCookie from "../../hooks/getCookie";
+//Snackbar
+import { useSnackbar } from "notistack";
+
 //Material UI Custom Styles
 const StyledTab = styled(Tab)({
   color: "white",
@@ -40,20 +46,29 @@ const tabs = [
     path: "/message",
   },
 ];
+
 //Header function
 const Header = () => {
   //State
   const [value, setValue] = useState();
-  const [admin] = useState(
-    localStorage.getItem("user") === '"Admin"' ? true : null
+  const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
+  const [official] = useState(
+    GetCookie("user") === '"PublicOfficial"' ? true : null
   );
+
+  //Snackbar
+  const { enqueueSnackbar } = useSnackbar();
+
   //Theme Constants
   const theme = useTheme();
+
   //Material UI Responsive Views
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
+
   //REDUX
   const dispatch = useDispatch();
   const logoutHandler = () => {
+    enqueueSnackbar("Logged Out Successfully");
     dispatch(Logout());
   };
   return (
@@ -90,7 +105,7 @@ const Header = () => {
                 value={value}
                 onChange={(e, value) => setValue(value)}
               >
-                {admin
+                {admin || official
                   ? null
                   : tabs.map(({ label, path }) => (
                       <StyledTab

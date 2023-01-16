@@ -7,29 +7,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/LoginActions";
 //REACT-ROUTER-DOM
 import { useNavigate } from "react-router-dom";
+//Snackbar
 import { useSnackbar } from "notistack";
+//Cookie
+import GetCookie from "../hooks/getCookie";
 
 //MAIN FORM ARROW FUNCTION
 const Login = () => {
-  const { enqueueSnackbar } = useSnackbar();
   //STATES
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [social] = useState(
-    localStorage.getItem("user") === '"CommunitySocialWorker"' ? true : null
+    GetCookie("user") === '"CommunitySocialWorker"' ? true : null
   );
-  const [admin] = useState(
-    localStorage.getItem("user") === '"Admin"' ? true : null
-  );
+  const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
   const [official] = useState(
-    localStorage.getItem("user") === '"PublicOfficial"' ? true : null
+    GetCookie("user") === '"PublicOfficial"' ? true : null
   );
+  //Snackbar
+  const { enqueueSnackbar } = useSnackbar();
   // NAVIGATOR
   let navigate = useNavigate();
   //REDUX
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
-  const { error, userInfo } = userLogin;
+  const { userInfo } = userLogin;
   //CHECKING WHETHER USER IS AUTHENTICATED
   useEffect(() => {
     if (admin) {
@@ -37,15 +39,15 @@ const Login = () => {
     } else if (social) {
       navigate("/upload");
     } else if (official) {
-      navigate("/statics");
+      navigate("/p-statics");
     } else {
       navigate("/");
     }
-  }, []);
+  }, [admin, social, official, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    enqueueSnackbar(userInfo ? userInfo.msg : "Logged In");
+    enqueueSnackbar(userInfo ? userInfo.msg : "Logged In Successfully");
     dispatch(login(username, password)).then(() => {
       window.location.reload();
     });
@@ -97,30 +99,40 @@ const Login = () => {
             alignItems: "center",
           }}
         >
-          <Typography
-            component="h1"
-            variant="h5"
-            sx={{ fontWeight: "bold", color: "#5093D6" }}
-          >
-            Sign in
-          </Typography>
-          <Typography
-            component="h1"
-            variant="h3"
+          <Box
             sx={{
-              fontWeight: "bold",
-              color: "#5093D6",
-              textDecoration: "underline",
-              mt: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Rural Senses
-          </Typography>
+            <Typography
+              component="h1"
+              variant="h5"
+              sx={{ fontWeight: "bold", color: "#5093D6" }}
+            >
+              Sign in
+            </Typography>
+            <Typography
+              component="h4"
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                color: "#5093D6",
+                textDecoration: "underline",
+                mt: 2,
+              }}
+            >
+              Rural Sense
+            </Typography>
+          </Box>
+
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 5, width: { md: "400px" } }}
+            sx={{ mt: 5, width: { md: "400px" }, mx: 2 }}
           >
             <Typography
               component="p"

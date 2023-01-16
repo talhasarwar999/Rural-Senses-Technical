@@ -12,21 +12,42 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+//Material UI Icon
 import MenuIcon from "@mui/icons-material/Menu";
+//Snackbar
+import { useSnackbar } from "notistack";
+//Redux
 import { useDispatch } from "react-redux";
 import { Logout } from "../../redux/actions/LoginActions";
+//React-Router-Dom
+import { Link } from "react-router-dom";
+//Cookie
+import GetCookie from "../../hooks/getCookie";
+
 //Material UI Style
 const StyledListItemText = styled(ListItemText)({
   color: "white",
   fontWeight: "bold",
 });
+
 const DrawerComp = () => {
   //State
   const [openDrawer, setOpenDrawer] = useState(false);
-    const dispatch = useDispatch();
-    const logoutHandler = () => {
-      dispatch(Logout());
-    };
+  const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
+  const [official] = useState(
+    GetCookie("user") === '"PublicOfficial"' ? true : null
+  );
+
+  //Snackbar
+  const { enqueueSnackbar } = useSnackbar();
+
+  //Redux
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    enqueueSnackbar("Logged Out Successfully");
+    dispatch(Logout());
+  };
+
   return (
     <React.Fragment>
       <Drawer
@@ -43,7 +64,6 @@ const DrawerComp = () => {
             height: "100%",
           }}
         >
-          {/* {pages.map((page, index) => ( */}
           <Typography
             component="h1"
             variant="h4"
@@ -64,22 +84,34 @@ const DrawerComp = () => {
               <StyledListItemText></StyledListItemText>
             </ListItemIcon>
           </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <StyledListItemText>upload</StyledListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <StyledListItemText>Statics</StyledListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <StyledListItemText>Messages</StyledListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-          {/* ))} */}
+
+          {admin || official ? null : (
+            <ListItemButton onClick={() => setOpenDrawer(false)}>
+              <ListItemIcon>
+                <Link to="/upload">
+                  <StyledListItemText>upload</StyledListItemText>
+                </Link>
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+          {admin || official ? null : (
+            <ListItemButton onClick={() => setOpenDrawer(false)}>
+              <ListItemIcon>
+                <Link to="/statics">
+                  <StyledListItemText>Statics</StyledListItemText>
+                </Link>
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+          {admin || official ? null : (
+            <ListItemButton>
+              <ListItemIcon onClick={() => setOpenDrawer(false)}>
+                <Link to="/message">
+                  <StyledListItemText>Messages</StyledListItemText>
+                </Link>
+              </ListItemIcon>
+            </ListItemButton>
+          )}
           <Tooltip title="Click here for logout">
             <Button
               variant="outlined"

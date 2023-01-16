@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+//Material UI
 import {
   Box,
   Button,
@@ -12,10 +13,12 @@ import {
 //REDUX
 import { useDispatch } from "react-redux";
 import { CreateUserAction } from "../redux/actions/CreateUserActions";
+//Snackbar
 import { useSnackbar } from "notistack";
+//Cookie
+import GetCookie from "../hooks/getCookie";
 
 const CreateUser = () => {
-  const { enqueueSnackbar } = useSnackbar();
   //STATES
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -24,20 +27,22 @@ const CreateUser = () => {
   const handleChange = (event) => {
     setRole(event.target.value);
   };
+  //Snackbar
+  const { enqueueSnackbar } = useSnackbar();
   //REDUX
   const dispatch = useDispatch();
+  //Error Handle
+  const errorHandle = GetCookie("error");
   //CHECKING WHETHER USER IS AUTHENTICATED
-  const errorHandle = localStorage.getItem("error");
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(CreateUserAction(username, password, role)).then(() => {
-      enqueueSnackbar(errorHandle|| "created succesfully");
+      enqueueSnackbar(errorHandle || "created succesfully");
     });
-    console.log(localStorage.getItem("error"));
+    console.log(GetCookie("error"));
   };
   return (
     <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh" }}>
-      {" "}
       <Grid
         item
         xs={12}
@@ -63,7 +68,11 @@ const CreateUser = () => {
           <Typography
             component="h1"
             variant="h5"
-            sx={{ fontWeight: "bold", color: "white" }}
+            sx={{
+              fontWeight: "bold",
+              color: "white",
+              fontSize: { xs: 24, sm: 28 },
+            }}
           >
             Hello Admin
           </Typography>
@@ -75,6 +84,7 @@ const CreateUser = () => {
               color: "white",
               textDecoration: "underline",
               my: 3,
+              fontSize: { xs: 24, sm: 28 },
             }}
           >
             Create User Role
@@ -83,7 +93,7 @@ const CreateUser = () => {
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 3, width: { md: "400px" } }}
+            sx={{ mt: 3, mx: 2, width: { xs: "90%", sm: "400px" } }}
           >
             <Typography
               component="p"
@@ -96,7 +106,7 @@ const CreateUser = () => {
               sx={{
                 color: "#E8F0FE",
                 backgroundColor: "#E8F0FE",
-                minWidth: 400,
+                minWidth: { xs: "100%", sm: 400 },
                 my: 2,
               }}
             >

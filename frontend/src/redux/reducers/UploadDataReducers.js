@@ -1,9 +1,11 @@
+//Upload Data Request
 import {
   UPLOAD_DATA_REQUEST,
   UPLOAD_DATA_SUCCESS,
   UPLOAD_DATA_FAILURE,
 } from "../constants/UploadDataConstants";
 
+//Upload Data Reducer
 export const UploadDataReducer = (state = {}, action) => {
   switch (action.type) {
     case UPLOAD_DATA_REQUEST:

@@ -1,9 +1,11 @@
+// Create User Constant
 import {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
   CREATE_USER_FAILURE,
 } from "../constants/CreateUserConstants";
 
+// Create User Reducer
 export const CreateUserReducer = (state = {}, action) => {
   switch (action.type) {
     case CREATE_USER_REQUEST:
