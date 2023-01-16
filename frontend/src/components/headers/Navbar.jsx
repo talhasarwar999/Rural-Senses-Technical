@@ -44,6 +44,9 @@ const tabs = [
 const Header = () => {
   //State
   const [value, setValue] = useState();
+  const [admin] = useState(
+    localStorage.getItem("user") === '"Admin"' ? true : null
+  );
   //Theme Constants
   const theme = useTheme();
   //Material UI Responsive Views
@@ -87,14 +90,16 @@ const Header = () => {
                 value={value}
                 onChange={(e, value) => setValue(value)}
               >
-                {tabs.map(({ label, path }) => (
-                  <StyledTab
-                    key={label}
-                    label={label}
-                    component={Link}
-                    to={path}
-                  />
-                ))}
+                {admin
+                  ? null
+                  : tabs.map(({ label, path }) => (
+                      <StyledTab
+                        key={label}
+                        label={label}
+                        component={Link}
+                        to={path}
+                      />
+                    ))}
               </Tabs>
               <Button
                 variant="outlined"

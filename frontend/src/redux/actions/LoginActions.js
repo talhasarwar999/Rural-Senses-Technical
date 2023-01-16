@@ -28,15 +28,12 @@ export const login = (username, password) => async (dispatch) => {
     const { data } = await axios.post(
       ApiServer + "/user-signin",
       bodyFormData,
-      config,
+      config
     );
-    const token = data;
-    console.log("tokenn", token);
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
     });
-    console.log("success", data.role);
     localStorage.setItem("userInfo", JSON.stringify(data));
     localStorage.setItem("user", JSON.stringify(data.role));
   } catch (error) {

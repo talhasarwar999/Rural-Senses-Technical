@@ -36,11 +36,12 @@ export const CreateUserAction = (username, password, role) => async (dispatch) =
     dispatch({
       type: CREATE_USER_SUCCESS,
       payload: data,
-    });
+    })
   } catch (error) {
     dispatch({
       type: CREATE_USER_FAILURE,
-      payload: error.detail,
+      payload: error.response.data.msg,
     });
+    console.log(error.response.data.msg);
   }
 };
