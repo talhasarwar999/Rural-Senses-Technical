@@ -1,5 +1,7 @@
 //AXIOS
 import axios from "axios";
+//Cookie
+import GetCookie from "../../hooks/getCookie";
 //COMMON API
 import { ApiServer } from "../../ApiConstant";
 //Review Statics CONSTANTS
@@ -9,13 +11,14 @@ import {
   REVIEW_STATICS_FAILURE,
 } from "../constants/ReviewStaticsConstants";
 
+//Review Statics Action
 export const ReviewStaticsAction = () => async (dispatch) => {
   try {
     dispatch({ type: REVIEW_STATICS_REQUEST });
     const config = {
       headers: {
         Authorization: `Bearer ${
-          JSON.parse(localStorage.getItem("userInfo"))["access_token"]
+          JSON.parse(GetCookie("userInfo"))["access_token"]
         }`,
       },
     };

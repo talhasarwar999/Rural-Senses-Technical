@@ -1,5 +1,8 @@
 //AXIOS
 import axios from "axios";
+//Cookie
+import SetCookie from "../../hooks/setCookie";
+import RemoveCookie from "../../hooks/removeCookie";
 //COMMON API
 import { ApiServer } from "../../ApiConstant";
 //LOGIN CONSTANTS
@@ -21,7 +24,8 @@ export const login = (username, password) => async (dispatch) => {
         "content-type": "application/json",
       },
     };
-
+    RemoveCookie("userInfo");
+    RemoveCookie("user");
     var bodyFormData = new FormData();
     bodyFormData.append("username", username);
     bodyFormData.append("password", password);
@@ -34,8 +38,8 @@ export const login = (username, password) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: data,
     });
-    localStorage.setItem("userInfo", JSON.stringify(data));
-    localStorage.setItem("user", JSON.stringify(data.role));
+    SetCookie("userInfo", JSON.stringify(data));
+    SetCookie("user", JSON.stringify(data.role));
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAILURE,
@@ -48,7 +52,8 @@ export const login = (username, password) => async (dispatch) => {
 // Logout Actions
 
 export const Logout = () => (dispatch) => {
-  window.localStorage.clear();
+  RemoveCookie("userInfo");
+  RemoveCookie("user");
   window.location.reload();
   dispatch({ type: USER_LOGOUT });
 };

@@ -1,10 +1,8 @@
 import React from "react";
 //Material UI
 import { Box, Grid, Typography } from "@mui/material";
-//Component
-import ReviewStaticsTable from "../components/table/ReviewStaticsTable";
 
-function ReviewStatics() {
+function PublicStatics() {
   return (
     <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh" }}>
       <Grid
@@ -30,7 +28,7 @@ function ReviewStatics() {
           }}
         >
           <Typography
-            component="h5"
+            component="h1"
             variant="h5"
             sx={{
               fontWeight: "bold",
@@ -38,7 +36,7 @@ function ReviewStatics() {
               fontSize: { xs: 18, sm: 28 },
             }}
           >
-            Hello, Community Social Worker
+            hello, Public Official
           </Typography>
           <Typography
             component="h4"
@@ -53,18 +51,10 @@ function ReviewStatics() {
           >
             Welcome to Review Statics
           </Typography>
-          <Box
-            sx={{
-              width: { xs: "90%", sm: "80%" },
-              mb: 4,
-            }}
-          >
-            <ReviewStaticsTable />
-          </Box>
         </Box>
       </Grid>
     </Box>
   );
 }
 
-export default ReviewStatics;
+export default PublicStatics;

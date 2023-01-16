@@ -2,28 +2,32 @@ import React, { useState } from "react";
 //REDUX
 import { useDispatch } from "react-redux";
 import { UploadDataAction } from "../redux/actions/UploadDataActions";
-import { useSnackbar } from "notistack";
+//Material UI
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+//Snackbar
+import { useSnackbar } from "notistack";
+//React Router Dom
+import { useNavigate } from "react-router-dom";
 
 function UploadData() {
-  const { enqueueSnackbar } = useSnackbar();
-
+  //State
   const [file, setFile] = useState();
   const [communityName, setCommunityName] = useState("");
   const [communitySize, setCommunitySize] = useState("");
-
+  //File Reader
   const fileReader = new FileReader();
-
-  const handleOnChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
+  //Snackbar
+  const { enqueueSnackbar } = useSnackbar();
+  //Redux
   const dispatch = useDispatch();
+  // NAVIGATOR
+  let navigate = useNavigate();
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
     dispatch(UploadDataAction(communityName, communitySize, file)).then(() => {
       enqueueSnackbar("Uploaded Succesfully");
+      navigate("/statics");
     });
 
     if (file) {
@@ -34,10 +38,11 @@ function UploadData() {
       fileReader.readAsText(file);
     }
   };
-
-  //REDUX
+  const handleOnChange = (e) => {
+    setFile(e.target.files[0]);
+  };
   return (
-    <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh" }}>
+    <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh", width: "100%" }}>
       <Grid
         item
         xs={12}
@@ -57,19 +62,20 @@ function UploadData() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            justifyContent: "center",
             mt: 7,
           }}
         >
           <Typography
-            component="h1"
-            variant="h5"
+            component="h6"
+            variant="h6"
             sx={{ fontWeight: "bold", color: "white" }}
           >
             Hello, Community Social Worker
           </Typography>
           <Typography
-            component="h4"
-            variant="h4"
+            component="h5"
+            variant="h5"
             sx={{
               fontWeight: "bold",
               color: "white",
@@ -82,7 +88,7 @@ function UploadData() {
           <Box
             component="form"
             noValidate
-            sx={{ mt: 3, width: { md: "400px" } }}
+            sx={{ mt: 3, width: { md: "400px" }, mx: 2 }}
           >
             <Typography
               component="p"
