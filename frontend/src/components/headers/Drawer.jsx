@@ -97,8 +97,8 @@ const DrawerComp = () => {
           {admin || official ? null : (
             <ListItemButton onClick={() => setOpenDrawer(false)}>
               <ListItemIcon>
-                <Link to="/statics">
-                  <StyledListItemText>Statics</StyledListItemText>
+                <Link to="/statistics">
+                  <StyledListItemText>Stats</StyledListItemText>
                 </Link>
               </ListItemIcon>
             </ListItemButton>

@@ -27,7 +27,7 @@ function UploadData() {
     e.preventDefault();
     dispatch(UploadDataAction(communityName, communitySize, file)).then(() => {
       enqueueSnackbar("Uploaded Succesfully");
-      navigate("/statics");
+      navigate("/Statistics");
     });
 
     if (file) {

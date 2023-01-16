@@ -37,8 +37,8 @@ const tabs = [
     path: "/upload",
   },
   {
-    label: "Statics",
-    path: "/statics",
+    label: "Stats",
+    path: "/statistics",
   },
 
   {

@@ -1,8 +1,9 @@
 import React from "react";
 //Material UI
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 //Component
 import ReviewStaticsTable from "../components/table/ReviewStaticsTable";
+import { PieChart } from "../components/chart/PieChart";
 
 function ReviewStatics() {
   return (
@@ -53,14 +54,27 @@ function ReviewStatics() {
           >
             Welcome to Review Statics
           </Typography>
-          <Box
+          <Stack
+            spacing={3}
             sx={{
-              width: { xs: "90%", sm: "80%" },
+              width: { xs: "90%", sm: "100%" },
               mb: 4,
+              display: "flex",
+              flexDirection: {xs:"column",md:"row"},
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
+            <Box
+              sx={{
+                width: "40%",
+                mb:3
+              }}
+            >
+              <PieChart />
+            </Box>
             <ReviewStaticsTable />
-          </Box>
+          </Stack>
         </Box>
       </Grid>
     </Box>
