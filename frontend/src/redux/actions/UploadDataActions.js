@@ -43,7 +43,8 @@ export const UploadDataAction =
     } catch (error) {
       dispatch({
         type: UPLOAD_DATA_FAILURE,
-        payload: error.detail,
+        payload: error.response.data.msg,
       });
+      console.log(error.response.data.msg);
     }
   };

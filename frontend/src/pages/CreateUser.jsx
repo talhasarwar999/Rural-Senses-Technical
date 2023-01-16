@@ -27,11 +27,13 @@ const CreateUser = () => {
   //REDUX
   const dispatch = useDispatch();
   //CHECKING WHETHER USER IS AUTHENTICATED
+  const errorHandle = localStorage.getItem("error");
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(CreateUserAction(username, password, role)).then(() => {
-      enqueueSnackbar("Created Successfully");
+      enqueueSnackbar(errorHandle|| "created succesfully");
     });
+    console.log(localStorage.getItem("error"));
   };
   return (
     <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh" }}>
@@ -158,7 +160,7 @@ const CreateUser = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2, backgroundColor: "#396CAA" }}
             >
-              Sign In
+              Create User
             </Button>
           </Box>
         </Box>

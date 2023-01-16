@@ -31,7 +31,8 @@ export const ReviewStaticsAction = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: REVIEW_STATICS_FAILURE,
-      payload: error.detail,
+      payload: error.response.data.msg,
     });
+    console.log(error.response.data.msg);
   }
 };

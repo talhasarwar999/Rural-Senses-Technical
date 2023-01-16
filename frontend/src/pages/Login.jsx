@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 //REDUX
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/LoginActions";
 //REACT-ROUTER-DOM
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,8 @@ const Login = () => {
   let navigate = useNavigate();
   //REDUX
   const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { error, userInfo } = userLogin;
   //CHECKING WHETHER USER IS AUTHENTICATED
   useEffect(() => {
     if (admin) {
@@ -39,11 +41,11 @@ const Login = () => {
     } else {
       navigate("/");
     }
-  });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    enqueueSnackbar("Logged In");
+    enqueueSnackbar(userInfo ? userInfo.msg : "Logged In");
     dispatch(login(username, password)).then(() => {
       window.location.reload();
     });
