@@ -39,7 +39,7 @@ const Login = () => {
     } else if (social) {
       navigate("/upload");
     } else if (official) {
-      navigate("/p-statics");
+      navigate("/p-statistics");
     } else {
       navigate("/");
     }

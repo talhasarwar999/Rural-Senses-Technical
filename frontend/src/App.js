@@ -44,14 +44,14 @@ function App() {
 
         <Route exact path="/" element={<ProtectedSocialRoute />}>
           <Route exact path="/upload" element={<UploadData />} />
-          <Route exact path="/statics" element={<ReviewStatics />} />
+          <Route exact path="/statistics" element={<ReviewStatics />} />
           <Route exact path="/message" element={<Messages />} />
         </Route>
 
         {/* Public Official Protected Routes */}
 
         <Route exact path="/" element={<ProtectedOfficialRoute />}>
-          <Route exact path="/p-statics" element={<PublicStatics />} />
+          <Route exact path="/p-statistics" element={<PublicStatics />} />
         </Route>
       </Routes>
     </BrowserRouter>
