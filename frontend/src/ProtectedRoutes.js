@@ -1,27 +1,32 @@
-//REACT-ROUTER-DOM
 import { useState } from "react";
+//REACT-ROUTER-DOM
 import { Navigate, Outlet } from "react-router-dom";
+//Cookie
+import GetCookie from "./hooks/getCookie";
 
-// MAIN ARROW FUNCTION TO PROTECT ROUTES
+// Protected Routes for Admin
 export const ProtectedRoute = () => {
-  const [admin] = useState(
-    localStorage.getItem("user") === '"Admin"' ? true : null
-  );
+  //State
+  const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
 
   return admin ? <Outlet /> : <Navigate to="/" />;
 };
 
+// Protected Routes for Community Social worker
 export const ProtectedSocialRoute = () => {
+  //State
   const [social] = useState(
-    localStorage.getItem("user") === '"CommunitySocialWorker"' ? true : null
+    GetCookie("user") === '"CommunitySocialWorker"' ? true : null
   );
 
   return social ? <Outlet /> : <Navigate to="/" />;
 };
 
+// Protected Routes for Public Official
 export const ProtectedOfficialRoute = () => {
+  //State
   const [official] = useState(
-    localStorage.getItem("user") === '"PublicOfficial"' ? true : null
+    GetCookie("user") === '"PublicOfficial"' ? true : null
   );
 
   return official ? <Outlet /> : <Navigate to="/" />;

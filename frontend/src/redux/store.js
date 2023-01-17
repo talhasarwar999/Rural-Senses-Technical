@@ -7,13 +7,19 @@ import { composeWithDevTools } from "redux-devtools-extension";
 //REDUCERS
 import { userLoginReducer } from "./reducers/LoginReducers";
 import { CreateUserReducer } from "./reducers/CreateUserReducers";
+import { UploadDataReducer } from "./reducers/UploadDataReducers";
+import { ReviewStaticsReducer } from "./reducers/ReviewStaticsReducers";
+import GetCookie from "../hooks/getCookie";
+
 //CALLING REDUCERS
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   createUser: CreateUserReducer,
+  uploadData: UploadDataReducer,
+  reviewStatics: ReviewStaticsReducer,
 });
-const userInfoFromStorage = localStorage.getItem("userInfo")
-  ? JSON.parse(localStorage.getItem("userInfo"))
+const userInfoFromStorage = GetCookie("userInfo")
+  ? JSON.parse(GetCookie("userInfo"))
   : null;
 const initialState = {
   userLogin: { userInfo: userInfoFromStorage },

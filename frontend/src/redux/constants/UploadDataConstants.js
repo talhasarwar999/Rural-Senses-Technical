@@ -1,0 +1,5 @@
+// Upload Data Constants
+
+export const UPLOAD_DATA_REQUEST = "UPLOAD_DATA_REQUEST";
+export const UPLOAD_DATA_SUCCESS = "UPLOAD_DATA_SUCCESS";
+export const UPLOAD_DATA_FAILURE = "UPLOAD_DATA_FAILURE";

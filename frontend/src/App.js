@@ -1,11 +1,16 @@
 import { useState } from "react";
+//React-Router-Dom
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+//Components
 import Header from "./components/headers/Navbar";
+import GetCookie from "./hooks/getCookie";
 import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
 import Messages from "./pages/Messages";
+import PublicStatics from "./pages/PublicStatics";
 import ReviewStatics from "./pages/ReviewStatics";
 import UploadData from "./pages/UploadData";
+//Protected Routes
 import {
   ProtectedOfficialRoute,
   ProtectedRoute,
@@ -13,14 +18,13 @@ import {
 } from "./ProtectedRoutes";
 
 function App() {
-  const [admin] = useState(
-    localStorage.getItem("user") === '"Admin"' ? true : null
-  );
+  //State
+  const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
   const [social] = useState(
-    localStorage.getItem("user") === '"CommunitySocialWorker"' ? true : null
+    GetCookie("user") === '"CommunitySocialWorker"' ? true : null
   );
   const [official] = useState(
-    localStorage.getItem("user") === '"PublicOfficial"' ? true : null
+    GetCookie("user") === '"PublicOfficial"' ? true : null
   );
 
   return (
@@ -40,14 +44,14 @@ function App() {
 
         <Route exact path="/" element={<ProtectedSocialRoute />}>
           <Route exact path="/upload" element={<UploadData />} />
-          <Route exact path="/statics" element={<ReviewStatics />} />
+          <Route exact path="/statistics" element={<ReviewStatics />} />
           <Route exact path="/message" element={<Messages />} />
         </Route>
 
         {/* Public Official Protected Routes */}
 
         <Route exact path="/" element={<ProtectedOfficialRoute />}>
-          <Route exact path="/statics" element={<ReviewStatics />} />
+          <Route exact path="/p-statistics" element={<PublicStatics />} />
         </Route>
       </Routes>
     </BrowserRouter>
