@@ -374,6 +374,24 @@ def review_message_by_community():
 
 
 
+@app.route("/get-communities", methods=["GET"])
+@jwt_required()
+@check_role_and_authorize('PublicOfficial')
+def get_communities():
+    entire_community = Feedback.objects()
+    com_data = []
+    for community in entire_community:
+        com_data.append({
+            "community": community.community,
+            "community_size": community.community_size,
+            "age": community.age,
+            "classification": community.classification
+        })
+    return jsonify(com_data), 200
+
+
+
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8000))
     app.run(debug=True, host='0.0.0.0', port=port)
