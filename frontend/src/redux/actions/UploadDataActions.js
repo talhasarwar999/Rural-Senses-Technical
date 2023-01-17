@@ -13,7 +13,7 @@ import {
 
 //Upload Data Action
 export const UploadDataAction =
-  (community_name, community_size, csv_file) => async (dispatch) => {
+  (community, community_size, csv_file) => async (dispatch) => {
     try {
       dispatch({
         type: UPLOAD_DATA_REQUEST,
@@ -31,7 +31,7 @@ export const UploadDataAction =
       const { data } = await axios.post(
         ApiServer + "/upload-data-by-community",
         {
-          community_name: community_name,
+          community: community,
           community_size: community_size,
           csv_file: csv_file,
         },

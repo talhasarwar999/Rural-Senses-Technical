@@ -3,7 +3,7 @@ import {
   REVIEW_STATICS_REQUEST,
   REVIEW_STATICS_SUCCESS,
   REVIEW_STATICS_FAILURE,
-} from "../constants/ReviewStaticsConstants";
+} from "../constants/ReviewStatsConstants";
 
 // Review Statics Reducer
 export const ReviewStaticsReducer = (state = { data: [] }, action) => {

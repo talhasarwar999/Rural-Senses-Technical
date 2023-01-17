@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 //Material UI
 import { Box, Grid, Stack, Typography } from "@mui/material";
 //Component
-import ReviewStaticsTable from "../components/table/ReviewStaticsTable";
-import { PieChart } from "../components/chart/PieChart";
+import PieChart from "../components/chart/PieChart";
+//Redux
+import { useDispatch, useSelector } from "react-redux";
+import { ReviewStaticsAction } from "../redux/actions/ReviewStatsActions";
 
-function ReviewStatics() {
+function ReviewStats() {
+  //REDUX
+  const dispatch = useDispatch();
+  const reviewStatics = useSelector((state) => state.reviewStatics);
+  const { statics } = reviewStatics;
+
+  useEffect(() => {
+    dispatch(ReviewStaticsAction());
+    // console.log("Review", Object(statics).keys())
+  }, [dispatch]);
   return (
     <Box sx={{ backgroundColor: "#7EB3E5", minHeight: "100vh" }}>
       <Grid
@@ -60,7 +71,7 @@ function ReviewStatics() {
               width: { xs: "90%", sm: "100%" },
               mb: 4,
               display: "flex",
-              flexDirection: {xs:"column",md:"row"},
+              flexDirection: { xs: "column", md: "row" },
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -68,12 +79,19 @@ function ReviewStatics() {
             <Box
               sx={{
                 width: "40%",
-                mb:3
+                mb: 3,
               }}
             >
-              <PieChart />
+              {statics ? (
+                <PieChart
+                  key={Object.keys(statics)}
+                  xLabels={Object.keys(statics)}
+                  values={Object.values(statics)}
+                />
+              ) : (
+                <></>
+              )}
             </Box>
-            <ReviewStaticsTable />
           </Stack>
         </Box>
       </Grid>
@@ -81,4 +99,4 @@ function ReviewStatics() {
   );
 }
 
-export default ReviewStatics;
+export default ReviewStats;
