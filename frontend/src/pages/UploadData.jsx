@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 function UploadData() {
   //State
   const [file, setFile] = useState();
-  const [communityName, setCommunityName] = useState("");
+  const [community, setCommunity] = useState("");
   const [communitySize, setCommunitySize] = useState("");
   //File Reader
   const fileReader = new FileReader();
@@ -25,7 +25,7 @@ function UploadData() {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(UploadDataAction(communityName, communitySize, file)).then(() => {
+    dispatch(UploadDataAction(community, communitySize, file)).then(() => {
       enqueueSnackbar("Uploaded Succesfully");
       navigate("/Statistics");
     });
@@ -102,14 +102,14 @@ function UploadData() {
               required
               fullWidth
               margin="normal"
-              id="communityName"
-              name="communityName"
-              autoComplete="communityName"
+              id="community"
+              name="community"
+              autoComplete="community"
               label=""
               type="text"
-              value={communityName}
+              value={community}
               sx={{ backgroundColor: "#E8F0FE" }}
-              onChange={(e) => setCommunityName(e.target.value)}
+              onChange={(e) => setCommunity(e.target.value)}
             />
             <Typography
               component="p"
@@ -126,8 +126,8 @@ function UploadData() {
               id="communitySize"
               name="communitySize"
               autoComplete="communitySize"
-              label=""
-              type="text"
+              label= ""
+              type="number"
               value={communitySize}
               sx={{ backgroundColor: "#E8F0FE" }}
               onChange={(e) => setCommunitySize(e.target.value)}
