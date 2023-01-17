@@ -1,9 +1,12 @@
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 from flask import Flask, request, jsonify, make_response
 from werkzeug.utils import secure_filename
+from mongoengine import connect
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from functools import wraps
+from permissions import *
+from models import *
 import pandas as pd
 import hashlib
 import csv
@@ -15,11 +18,17 @@ import os
 # Flask app configurations
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "e71e95b221e9c960889260960a244de2f0a9c7a8"   # Flask secret key
-app.config['MONGO_URI'] = "mongodb+srv://talhasarwa999:ali2061989@cluster0.sy4ye0l.mongodb.net/TestMongo?retryWrites=true&w=majority"   # Databse URI
-mongo_client = PyMongo(app)
-db = mongo_client.db
+app.config["MONGODB_DB"] = 'TestMongo'  # Database Name
+connect(
+    'TestMongo',
+    username='talhasarwar999',
+    password='ali2061989',
+    host='mongodb+srv://talhasarwa999:ali2061989@cluster0.sy4ye0l.mongodb.net/TestMongo?retryWrites=true&w=majority',
+    port=10043
+)   # Databse Connection
 jwt = JWTManager(app)
 CORS(app)
+
 
 
 
@@ -28,7 +37,8 @@ CORS(app)
 def user_signin():
     if request.method == "POST":
         login_details = request.get_json()  # store the json body request
-        user_from_db = db.users.find_one({'username': login_details['username']})   # check if user exist
+        user_from_db = User.objects(username=login_details['username']).first() # check if user exist
+
         if user_from_db:
             encrypted_password = hashlib.sha256(login_details['password'].encode("utf-8")).hexdigest()
             if encrypted_password == user_from_db['password']:
@@ -48,22 +58,6 @@ def user_signin():
                     return jsonify(access_token=access_token, role=role)
 
         return jsonify({'msg': 'The username or password is incorrect'})
-
-
-
-def check_role_and_authorize(user_role):
-    def wrapper(fn):
-        @wraps(fn)
-        def decorator(*args, **kwargs):
-            verify_jwt_in_request()   # verify jwt exist
-            current_user = get_jwt_identity() # get current user
-            user_from_db = db.users.find_one({'username': current_user})    # check if user exist
-            if user_from_db and user_from_db['role'] == user_role:  # check if role exist
-                return fn(*args, **kwargs)
-            else:
-                return jsonify(msg="bad request!"), 404
-        return decorator
-    return wrapper
 
 
 
@@ -97,12 +91,14 @@ def public_official_dashboard():
 def add_user_by_admin():
     if request.method == "POST":
         user_details = request.get_json()   # store the json body request
-        encrypted_password = hashlib.sha256(user_details['password'].encode("utf-8")).hexdigest()   # to encrypt password
-        db.users.insert_one({
+        encrypted_password = hashlib.sha256(user_details['password'].encode("utf-8")).hexdigest()   # Encrypt password
+        add_user = {
                 "username":user_details['username'],
                 "password":encrypted_password,
                 "role":user_details['role']
-            })
+            }
+        user = User(**add_user)
+        user.save()
         return "User Added Successfully", 200
 
 
@@ -112,10 +108,11 @@ def add_user_by_admin():
 @check_role_and_authorize('CommunitySocialWorker')
 def upload_data_by_community():
     if request.method == "POST":
-        current_user = get_jwt_identity()   # get user from JWT
-        community_name = request.form.get('community_name')
+        current_user = get_jwt_identity()   # get current user from JWT
+        community = request.form.get('community')
         community_size = request.form.get('community_size')
         csv_file = request.files['csv_file']
+
 
         # validate csv file only
         filename = secure_filename(csv_file.filename)
@@ -126,34 +123,37 @@ def upload_data_by_community():
 
 
         # check specific format for csv file
-        df = pd.read_csv(csv_file, nrows=1)
+        df = pd.read_csv(csv_file)
         df.columns = map(str.lower, df.columns)
         if 'what bothers you?' in df.columns and 'age' in df.columns and len(df.columns) == 2:
             pass
         else:
             return "CSV file is not specific format", 400
 
+        df.rename(columns={'what bothers you?': 'description'}, inplace=True)
+        user = User.objects(username=current_user).first()
+        if community not in user.communities:
+            user.communities.append(community)
+            user.save()
 
-        # convert nested dict to single dict
-        convert_dict = df.to_dict()
-        new_dict = {}
-        if 0 in convert_dict['what bothers you?']:
-            new_dict['what bothers you?'] = convert_dict['what bothers you?'][0]
-        else:
-            new_dict['what bothers you?']  = convert_dict['what bothers you?']
-        if 0 in convert_dict['age']:
-            new_dict['age'] = convert_dict['age'][0]
-        else:
-            new_dict['age'] = convert_dict['age']
-
-        # save to database
-        db.community.insert_one({
-                "username":current_user,
-                "community_name":community_name,
-                "community_size":community_size,
-                "csv_file":new_dict,
-        })
-        return "Data Uploaded Successfully", 200
+        # parse csv and analyze data
+        for idx, row in df.iterrows():
+            classification = "UNKNOWN"
+            if 'family' in row['description'].lower() and int(row['age']) < 25:
+                classification = "FAMILY"
+            elif 'health' in row['description'].lower() and int(row['age']) > 18:
+                classification = "HEALTH"
+            community_data = {
+                "user": user,
+                "community": community,
+                "community_size": community_size,
+                "classification": classification,
+                "description": row['description'],
+                "age": row['age'],
+            }
+            feedback = Feedback(**community_data)
+            feedback.save()
+        return "Community Data Uploaded Successfully", 200
 
 
 
@@ -162,57 +162,21 @@ def upload_data_by_community():
 @jwt_required()
 @check_role_and_authorize('CommunitySocialWorker')
 def review_statistic_by_community():
-    current_user = get_jwt_identity()   # get user from JWT
-    get_data = db.community.find({"username":current_user})
+    current_user = get_jwt_identity()   # get current user from JWT
+    get_user = User.objects(username=current_user).first()
 
-    # get csv uploaded data and add classfication
-    com_data = []
-    for data in get_data:
-        bothers = str(data.get('csv_file')['what bothers you?']).lower()
-        age = int(data.get('csv_file')['age'])
-        if bothers == 'family' and age < 25:
-            classification = 'FAMILY'
-        elif bothers == 'health' and age > 18:
-            classification = 'HEALTH'
-        else:
-            classification = 'UNKNOWN'
+    # calculate relative prcentage using group by clause
+    pipeline = {"$group": {
+            "_id": "$classification",
+            "total": { "$sum": 1 }
+            }
+    }
+    aggregated_data = Feedback.objects(user=get_user).aggregate(pipeline)
 
-        com_data.append({
-            "username": data.get('username'),
-            "community_name": data.get('community_name'),
-            "community_size": data.get('community_size'),
-            "csv_file": data.get('csv_file'),
-            "classification":classification
-        })
-
-    # separate classification type to get length
-    family_list = []
-    health_list = []
-    unknown_list = []
-    for data in com_data:
-        if data['classification'] == 'FAMILY':
-            family_list.append(data['classification'])
-        elif data['classification'] == 'HEALTH':
-            health_list.append(data['classification'])
-        else:
-            unknown_list.append(data['classification'])
-
-    # calculate percentage of each classification
-    family_percentage = 0
-    health_percentage = 0
-    unknown_percentage = 0
-
-    if len(com_data) != 0:
-        family_percentage = (len(family_list) / len(com_data)) * 100
-        health_percentage = (len(health_list) / len(com_data)) * 100
-        unknown_percentage = (len(unknown_list) / len(com_data)) * 100
-
-    relative_percentage = {}
-    relative_percentage['family_percentage'] = family_percentage
-    relative_percentage['health_percentage'] = health_percentage
-    relative_percentage['unknown_percentage'] = unknown_percentage
-
-    return jsonify(com_data, relative_percentage), 200
+    relative_percentage = []
+    for data in aggregated_data:
+        relative_percentage.append(data)
+    return jsonify(relative_percentage), 200
 
 
 
@@ -220,55 +184,28 @@ def review_statistic_by_community():
 @jwt_required()
 @check_role_and_authorize('PublicOfficial')
 def public_official_review():
-    get_data = db.community.find()
 
-    # get csv uploaded data and add classfication
-    com_data = []
-    for data in get_data:
-        bothers = str(data.get('csv_file')['what bothers you?']).lower()
-        age = int(data.get('csv_file')['age'])
-        if bothers == 'family' and age < 25:
-            classification = 'FAMILY'
-        elif bothers == 'health' and age > 18:
-            classification = 'HEALTH'
-        else:
-            classification = 'UNKNOWN'
+    # aggregate data using group by clause
+    pipeline = [ { "$group":{
+                "_id": {"classification":"$classification", "community":"$community"},
+                "total": {"$sum": 1}
+            }},
+        { "$group": {
+                "_id": "$_id.community",
+                "classifications": {
+                    "$push": {
+                        "classification": "$_id.classification",
+                        "count": "$total"
+                    },
+                },
+                "count": { "$sum": "$total" }
+        }}]
+    aggregated_data = Feedback.objects().aggregate(pipeline)
 
-        com_data.append({
-            "username": data.get('username'),
-            "community_name": data.get('community_name'),
-            "community_size": data.get('community_size'),
-            "csv_file": data.get('csv_file'),
-            "classification": classification
-        })
-
-    # separate classification type to get length
-    family_list = []
-    health_list = []
-    unknown_list = []
-    for data in com_data:
-        if data['classification'] == 'FAMILY':
-            family_list.append(data['classification'])
-        elif data['classification'] == 'HEALTH':
-            health_list.append(data['classification'])
-        else:
-            unknown_list.append(data['classification'])
-
-    # calculate percentage of each classification
-    family_percentage = 0
-    health_percentage = 0
-    unknown_percentage = 0
-
-    if len(com_data) != 0:
-        family_percentage = (len(family_list) / len(com_data)) * 100
-        health_percentage = (len(health_list) / len(com_data)) * 100
-        unknown_percentage = (len(unknown_list) / len(com_data)) * 100
-
-    relative_percentage = {}
-    relative_percentage['family_percentage'] = family_percentage
-    relative_percentage['health_percentage'] = health_percentage
-    relative_percentage['unknown_percentage'] = unknown_percentage
-    return jsonify(com_data, relative_percentage), 200
+    relative_percentage = []
+    for data in aggregated_data:
+        relative_percentage.append(data)
+    return jsonify(relative_percentage), 200
 
 
 
@@ -278,12 +215,15 @@ def public_official_review():
 @check_role_and_authorize('PublicOfficial')
 def send_message_by_publicofficial():
     if request.method == "POST":
-        json_data = request.get_json()  # get user from JWT
-        community = db.community.find_one({"community_name": json_data['community_name']})  # get user by community
-        db.messages.insert_one({
-            "username": community['username'],
+        json_data = request.get_json()  # store the json body request
+        current_user = get_jwt_identity()   # get current user from JWT
+        msg_data = {
+            "community": json_data['community'],
+            "sender": current_user,
             "message": json_data['message'],
-        })
+        }
+        save_message = Message(**msg_data)
+        save_message.save()
         return "Message Added Successfully", 200
 
 
@@ -292,13 +232,18 @@ def send_message_by_publicofficial():
 @jwt_required()
 @check_role_and_authorize('CommunitySocialWorker')
 def review_message_by_community():
-    current_user = get_jwt_identity()   # get user from JWT
-    community_user_msg = db.messages.find({"username": current_user})   # get messages by username
+    current_user = get_jwt_identity()   # get current user from JWT
+
+    user = User.objects(username=current_user).first()
     all_messages = []
-    for message in community_user_msg:
-        all_messages.append({
-            "message": message['message']
-        })
+    for community in user.communities:
+        find_msg = Message.objects(community=community)
+        for msg in find_msg:
+            all_messages.append({
+                "message": msg.message,
+                "sender": msg.sender,
+                "community": msg.community,
+            })
     return jsonify(all_messages), 200
 
 
