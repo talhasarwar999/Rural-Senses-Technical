@@ -1,7 +1,7 @@
 import React from "react";
-//REDUX
-
+//Material UI
 import { Box, Grid, Typography } from "@mui/material";
+import MessageTable from "../components/table/MessageTable";
 
 function Messages() {
   return (
@@ -50,8 +50,11 @@ function Messages() {
               fontSize: { xs: 18, sm: 28 },
             }}
           >
-            Welcome to Messages
+            Welcome to Review Messages
           </Typography>
+          <Box sx={{width:"80%"}}>
+            <MessageTable />
+          </Box>
         </Box>
       </Grid>
     </Box>
