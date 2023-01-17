@@ -1,0 +1,11 @@
+// message Constants
+
+export const MESSAGE_REQUEST = "MESSAGE_REQUEST";
+export const MESSAGE_SUCCESS = "MESSAGE_SUCCESS";
+export const MESSAGE_FAILURE = "MESSAGE_FAILURE";
+
+// get message Constants
+
+export const GET_MESSAGE_REQUEST = "GET_MESSAGE_REQUEST";
+export const GET_MESSAGE_SUCCESS = "GET_MESSAGE_SUCCESS";
+export const GET_MESSAGE_FAILURE = "GET_MESSAGE_FAILURE";

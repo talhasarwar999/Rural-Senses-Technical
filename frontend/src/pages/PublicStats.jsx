@@ -6,9 +6,9 @@ import StackBarChart from "../components/chart/StackBarChart";
 //Redux
 import { useDispatch, useSelector } from "react-redux";
 import { PublicStatsAction } from "../redux/actions/PublicStatsActions";
+import ReviewStatsDataTable from "../components/table/ReviewStatsDataTable";
 
 function PublicStats() {
-  
   //REDUX
   const dispatch = useDispatch();
   const publicStats = useSelector((state) => state.publicStats);
@@ -71,27 +71,31 @@ function PublicStats() {
               width: { xs: "90%", sm: "100%" },
               mb: 4,
               display: "flex",
-              flexDirection: { xs: "column", md: "row" },
+              flexDirection: { xs: "column" },
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             <Box
               sx={{
-                width: "60%",
+                width: "80%",
                 mb: 3,
               }}
             >
               {publicstats ? (
                 <StackBarChart
-                xLabels={publicstats.communities}
-                family={publicstats?.data?.FAMILY}
-                health={publicstats?.data?.HEALTH}
-                unknown={publicstats?.data?.UNKNOWN}
+                  xLabels={publicstats.communities}
+                  family={publicstats?.data?.FAMILY}
+                  health={publicstats?.data?.HEALTH}
+                  unknown={publicstats?.data?.UNKNOWN}
                 />
               ) : (
                 <></>
               )}
+            </Box>
+            <Typography variant="h3" component="h3" sx={{color:"white", fontSize:{xs:12,sm:52}}}> Table Of Community Stats</Typography>
+            <Box sx={{width:'80%'}}>
+              <ReviewStatsDataTable />
             </Box>
           </Stack>
         </Box>
