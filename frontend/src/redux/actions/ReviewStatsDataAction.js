@@ -22,7 +22,10 @@ export const ReviewStatsDataAction = () => async (dispatch) => {
         }`,
       },
     };
-    const { data } = await axios.get(ApiServer + "/get-communities", config);
+    const { data } = await axios.get(
+      ApiServer + "/api/get-communities",
+      config
+    );
     dispatch({
       type: REVIEW_STATS_DATA_SUCCESS,
       payload: data,

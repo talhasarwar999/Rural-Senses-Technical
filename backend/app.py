@@ -68,7 +68,7 @@ def user_signin():
                     role = 'PublicOfficial'
                     return jsonify(access_token=access_token, role=role)
 
-        return jsonify({'msg': 'The username or password is incorrect'})
+        return jsonify({'msg': 'The username or password is incorrect'}), 400
 
 
 

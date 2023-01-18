@@ -30,7 +30,7 @@ export const MessageAction = (community) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      ApiServer + "/send-message-by-publicofficial",
+      ApiServer + "/api/send-message-by-publicofficial",
       {
         community: community,
         message: `Please revise the data for community ${community}`,
@@ -64,7 +64,7 @@ export const GetMessageAction = () => async (dispatch) => {
       },
     };
     const { data } = await axios.get(
-      ApiServer + "/review-message-by-community",
+      ApiServer + "/api/review-message-by-community",
       config
     );
     dispatch({

@@ -29,7 +29,7 @@ export const UploadDataAction =
       };
 
       const { data } = await axios.post(
-        ApiServer + "/upload-data-by-community",
+        ApiServer + "/api/upload-data-by-community",
         {
           community: community,
           community_size: community_size,

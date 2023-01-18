@@ -3,13 +3,20 @@ import { useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 //Cookie
 import GetCookie from "./hooks/getCookie";
+import Header from "./components/headers/Navbar"
 
 // Protected Routes for Admin
 export const ProtectedRoute = () => {
   //State
   const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
 
-  return admin ? <Outlet /> : <Navigate to="/" />;
+  return admin ? (
+    <>
+      <Header /> <Outlet />
+    </>
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
 // Protected Routes for Community Social worker
@@ -19,7 +26,14 @@ export const ProtectedSocialRoute = () => {
     GetCookie("user") === '"CommunitySocialWorker"' ? true : null
   );
 
-  return social ? <Outlet /> : <Navigate to="/" />;
+  return social ? (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
 // Protected Routes for Public Official
@@ -29,5 +43,12 @@ export const ProtectedOfficialRoute = () => {
     GetCookie("user") === '"PublicOfficial"' ? true : null
   );
 
-  return official ? <Outlet /> : <Navigate to="/" />;
+  return official ? (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/" />
+  );
 };

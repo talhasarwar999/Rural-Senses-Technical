@@ -23,7 +23,7 @@ export const PublicStatsAction = () => async (dispatch) => {
       },
     };
     const { data } = await axios.get(
-      ApiServer + "/public-official-review",
+      ApiServer + "/api/public-official-review",
       config
     );
     dispatch({

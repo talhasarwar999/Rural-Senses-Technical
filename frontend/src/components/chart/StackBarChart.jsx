@@ -65,7 +65,7 @@ export default function BarChart({ xLabels, family,health,unknown }) {
         data: family,
       },
       {
-        label: "UNKNOWNg",
+        label: "UNKNOWN",
         backgroundColor: "lightgreen",
         borderColor: "green",
         borderWidth: 1,
