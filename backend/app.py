@@ -44,7 +44,7 @@ CORS(app)
 
 
 
-@app.route('/user-signin', methods=["POST"])
+@app.route('/api/user-signin', methods=["POST"])
 def user_signin():
     if request.method == "POST":
         login_details = request.get_json()  # store the json body request
@@ -72,7 +72,7 @@ def user_signin():
 
 
 
-@app.route("/admin-dashboard", methods=["GET"])
+@app.route("/api/admin-dashboard", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('Admin')
 def admin_dashboard():
@@ -80,7 +80,7 @@ def admin_dashboard():
 
 
 
-@app.route("/community-dashboard", methods=["GET"])
+@app.route("/api/community-dashboard", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('CommunitySocialWorker')
 def community_dashboard():
@@ -88,7 +88,7 @@ def community_dashboard():
 
 
 
-@app.route("/public-official-dashboard", methods=["GET"])
+@app.route("/api/public-official-dashboard", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('PublicOfficial')
 def public_official_dashboard():
@@ -96,7 +96,7 @@ def public_official_dashboard():
 
 
 
-@app.route("/add-user-by-admin", methods=["POST"])
+@app.route("/api/add-user-by-admin", methods=["POST"])
 @jwt_required()
 @check_role_and_authorize('Admin')
 def add_user_by_admin():
@@ -114,7 +114,7 @@ def add_user_by_admin():
 
 
 
-@app.route("/upload-data-by-community", methods=["POST"])
+@app.route("/api/upload-data-by-community", methods=["POST"])
 @jwt_required()
 @check_role_and_authorize('CommunitySocialWorker')
 def upload_data_by_community():
@@ -169,7 +169,7 @@ def upload_data_by_community():
 
 
 
-@app.route("/review-statistics-by-community", methods=["GET"])
+@app.route("/api/review-statistics-by-community", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('CommunitySocialWorker')
 def review_statistic_by_community():
@@ -195,26 +195,11 @@ def review_statistic_by_community():
 
 
 
-@app.route("/public-official-review", methods=["GET"])
+@app.route("/api/public-official-review", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('PublicOfficial')
 def public_official_review():
 
-    # aggregate data using group by clause
-    # pipeline = [ { "$group":{
-    #             "_id": {"classification":"$classification", "community":"$community"},
-    #             "total": {"$sum": 1}
-    #         }},
-    #     { "$group": {
-    #             "_id": "$_id.community",
-    #             "classifications": {
-    #                 "$push": {
-    #                     "classification": "$_id.classification",
-    #                     "count": "$total"
-    #                 },
-    #             },
-    #             "count": { "$sum": "$total" }
-    #     }}]
     pipeline = [
   {
     "$group": {
@@ -335,7 +320,7 @@ def public_official_review():
 
 
 
-@app.route("/send-message-by-publicofficial", methods=["POST"])
+@app.route("/api/send-message-by-publicofficial", methods=["POST"])
 @jwt_required()
 @check_role_and_authorize('PublicOfficial')
 def send_message_by_publicofficial():
@@ -353,7 +338,7 @@ def send_message_by_publicofficial():
 
 
 
-@app.route("/review-message-by-community", methods=["GET"])
+@app.route("/api/review-message-by-community", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('CommunitySocialWorker')
 def review_message_by_community():
@@ -374,7 +359,7 @@ def review_message_by_community():
 
 
 
-@app.route("/get-communities", methods=["GET"])
+@app.route("/api/get-communities", methods=["GET"])
 @jwt_required()
 @check_role_and_authorize('PublicOfficial')
 def get_communities():

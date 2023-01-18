@@ -7,3 +7,4 @@ Flask-Cors==3.0.10
 pandas==1.5.2
 flask-mongoengine==1.0.0
 flask-swagger-ui==4.11.1
+pytest-flask==1.2.0
