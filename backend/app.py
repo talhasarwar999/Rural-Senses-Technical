@@ -184,9 +184,13 @@ def review_statistic_by_community():
     }
     aggregated_data = Feedback.objects(user=get_user).aggregate(pipeline)
 
-    relative_percentage = []
+    relative_percentage = {}
     for data in aggregated_data:
-        relative_percentage.append(data)
+        print(data)
+        key = data["_id"]
+        relative_percentage[key] = data["total"]
+    
+    fake = {"labels":["H","F"], "values":[2,5]}
     return jsonify(relative_percentage), 200
 
 
@@ -197,26 +201,136 @@ def review_statistic_by_community():
 def public_official_review():
 
     # aggregate data using group by clause
-    pipeline = [ { "$group":{
-                "_id": {"classification":"$classification", "community":"$community"},
-                "total": {"$sum": 1}
-            }},
-        { "$group": {
-                "_id": "$_id.community",
-                "classifications": {
-                    "$push": {
-                        "classification": "$_id.classification",
-                        "count": "$total"
-                    },
+    # pipeline = [ { "$group":{
+    #             "_id": {"classification":"$classification", "community":"$community"},
+    #             "total": {"$sum": 1}
+    #         }},
+    #     { "$group": {
+    #             "_id": "$_id.community",
+    #             "classifications": {
+    #                 "$push": {
+    #                     "classification": "$_id.classification",
+    #                     "count": "$total"
+    #                 },
+    #             },
+    #             "count": { "$sum": "$total" }
+    #     }}]
+    pipeline = [
+  {
+    "$group": {
+      "_id": {
+        "__alias_0": "$classification",
+        "__alias_1": "$community"
+      },
+      "__alias_2": {
+        "$sum": {
+          "$cond": [
+            {
+              "$ne": [
+                {
+                  "$type": "$classification"
                 },
-                "count": { "$sum": "$total" }
-        }}]
+                "missing"
+              ]
+            },
+            1,
+            0
+          ]
+        }
+      }
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "__alias_0": "$_id.__alias_0",
+      "__alias_1": "$_id.__alias_1",
+      "__alias_2": 1
+    }
+  },
+  {
+    "$project": {
+      "group": "$__alias_0",
+      "communitite": "$__alias_1",
+      "value": "$__alias_2",
+      "_id": 0
+    }
+  },
+  {
+    "$group": {
+      "_id": {
+        "group": "$group"
+      },
+      "__grouped_docs": {
+        "$push": "$$ROOT"
+      }
+    }
+  },
+  {
+    "$sort": {
+      "_id.group": 1
+    }
+  },
+  {
+    "$unwind": {
+      "path": "$__grouped_docs"
+    }
+  },
+  {
+    "$replaceRoot": {
+      "newRoot": "$__grouped_docs"
+    }
+  },
+  {
+    "$limit": 50000
+  }
+]
     aggregated_data = Feedback.objects().aggregate(pipeline)
 
-    relative_percentage = []
-    for data in aggregated_data:
-        relative_percentage.append(data)
-    return jsonify(relative_percentage), 200
+    data = {}
+    communities = []
+    HEALTH = "HEALTH"
+    FAMILY = "FAMILY"
+    UNKOWN = "UNKNOWN"
+
+    copy_aggregated_data = []
+    for item in aggregated_data:
+        copy_aggregated_data.append(item)
+        if item["communitite"] not in communities:
+            communities.append(item["communitite"])
+    
+    for item in copy_aggregated_data:
+        print(item)
+        if item["group"] == FAMILY:
+            if data.get(FAMILY) is None:
+                data[FAMILY] = []
+
+            
+            community_no = communities.index(item["communitite"])
+            data[FAMILY].insert(community_no, item["value"])
+
+        elif item["group"] == HEALTH:
+            if data.get(HEALTH) is None:
+                data[HEALTH] = []
+            
+            community_no = communities.index(item["communitite"])
+            data[HEALTH].insert(community_no, item["value"])
+
+        elif item["group"] == UNKOWN:
+            if data.get(UNKOWN) is None:
+                data[UNKOWN] = []
+            
+            community_no = communities.index(item["communitite"])
+            data[UNKOWN].insert(community_no, item["value"])
+
+    
+    result = {
+        "communities" : communities,
+        "data":data
+    }
+
+        
+    return jsonify(result), 200
 
 
 

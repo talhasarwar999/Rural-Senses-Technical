@@ -8,7 +8,9 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { userLoginReducer } from "./reducers/LoginReducers";
 import { CreateUserReducer } from "./reducers/CreateUserReducers";
 import { UploadDataReducer } from "./reducers/UploadDataReducers";
-import { ReviewStaticsReducer } from "./reducers/ReviewStaticsReducers";
+import { ReviewStaticsReducer } from "./reducers/ReviewStatsReducers";
+import { PublicStatsReducer } from "./reducers/PublicStatsReducer";
+//Cookie
 import GetCookie from "../hooks/getCookie";
 
 //CALLING REDUCERS
@@ -17,6 +19,7 @@ const reducer = combineReducers({
   createUser: CreateUserReducer,
   uploadData: UploadDataReducer,
   reviewStatics: ReviewStaticsReducer,
+  publicStats: PublicStatsReducer,
 });
 const userInfoFromStorage = GetCookie("userInfo")
   ? JSON.parse(GetCookie("userInfo"))

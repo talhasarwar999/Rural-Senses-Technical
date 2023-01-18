@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { ReviewStaticsAction } from "../../redux/actions/ReviewStaticsActions";
+import { ReviewStaticsAction } from "../../redux/actions/ReviewStatsActions";
 // MUI Styled
 import { styled } from "@mui/material/styles";
 //Material Ui

@@ -7,8 +7,8 @@ import GetCookie from "./hooks/getCookie";
 import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
 import Messages from "./pages/Messages";
-import PublicStatics from "./pages/PublicStatics";
-import ReviewStatics from "./pages/ReviewStatics";
+import PublicStatics from "./pages/PublicStats";
+import ReviewStatics from "./pages/ReviewStats";
 import UploadData from "./pages/UploadData";
 //Protected Routes
 import {
