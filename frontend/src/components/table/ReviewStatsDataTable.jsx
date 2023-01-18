@@ -84,7 +84,7 @@ export default function ReviewStatsDataTable() {
               </StyledTableCell>
 
               <StyledTableCell sx={{ fontWeight: "600" }}>
-                Community Size
+                What bother's
               </StyledTableCell>
 
               <StyledTableCell sx={{ fontWeight: "600" }}>Age</StyledTableCell>
@@ -108,18 +108,18 @@ export default function ReviewStatsDataTable() {
                     <StyledTableCell component="th" scope="row">
                       {row.community}
                     </StyledTableCell>
-                    <StyledTableCell>{row.community_size}</StyledTableCell>
+                    <StyledTableCell>{row.description}</StyledTableCell>
                     <StyledTableCell>{row.age}</StyledTableCell>
 
                     <StyledTableCell>{row.classification}</StyledTableCell>
                     <StyledTableCell>
-                        <Button
-                          onClick={handleOnSubmit.bind(this, row.community)}
+                      <Button
+                        onClick={handleOnSubmit.bind(this, row.community)}
                         variant="outlined"
-                        >
-                          Message
-                        </Button>
-                      </StyledTableCell>
+                      >
+                        Message
+                      </Button>
+                    </StyledTableCell>
                   </StyledTableRow>
                 ))
             ) : (

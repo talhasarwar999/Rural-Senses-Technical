@@ -344,6 +344,7 @@ def get_communities():
         com_data.append({
             "community": community.community,
             "community_size": community.community_size,
+            "description": community.description,
             "age": community.age,
             "classification": community.classification
         })
