@@ -1,14 +1,3 @@
-# FROM node:10
-
-# WORKDIR /frontend/
-
-# COPY package*.json ./
-
-# RUN npm install
-
-# EXPOSE 3080
-
-# CMD ["npm", "run", "dev"]
 
 # pull official base image
 FROM node:18.3.0-alpine
