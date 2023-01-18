@@ -38,7 +38,7 @@
 
 
           "admin-dashboard": {
-               "type": "",
+               "type": "object",
                 "properties": {
 
                 }
@@ -75,6 +75,16 @@
 
                 }
             },
+
+
+
+          "get-communities": {
+               "type": "object",
+                "properties": {
+
+                }
+            },
+
 
 
             "add-user-by-admin": {
@@ -125,13 +135,9 @@
                     "community_size": {
                     "type": "integer"
                     },
-                   "consumes":{
-                     "Content-Type":"multipart/form-data"
-                   },
-                    "parameters":{
-                       "in": "formData",
-                       "name": "csv_file",
-                       "type": "file"
+
+                    "csv_file": {
+                    "type": "file"
                     }
                 }
             }
@@ -143,7 +149,7 @@
 
 
    "paths": {
-        "/user-signin": {
+        "/api/user-signin": {
             "post": {
             "tags": [
                 "Get API Token"
@@ -180,7 +186,7 @@
 
 
 
-     "/add-user-by-admin": {
+     "/api/add-user-by-admin": {
             "post": {
                "security": [
            {
@@ -222,15 +228,20 @@
 
 
 
-     "/upload-data-by-community": {
+     "/api/upload-data-by-community": {
             "post": {
+               "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
             "tags": [
                 "Community Feedback"
             ],
             "requestBody": {
             "required": true,
             "content": {
-                "application/json": {
+                "multipart/form-data": {
                 "schema": {
                     "$ref": "#/components/schemas/upload-data-by-community"
                     }
@@ -265,7 +276,7 @@
 
 
 
-     "/admin-dashboard": {
+     "/api/admin-dashboard": {
             "get": {
               "security": [
            {
@@ -275,15 +286,7 @@
             "tags": [
                 "Admin Dashboard"
             ],
-            "requestBody": {
-            "content": {
-                "application/json": {
-                "schema": {
-                    "$ref": "#/components/schemas/admin-dashboard"
-                    }
-                }
-            }
-            },
+
             "responses": {
 
                 "200": {
@@ -305,7 +308,7 @@
 
 
 
-     "/community-dashboard": {
+     "/api/community-dashboard": {
             "get": {
               "security": [
            {
@@ -315,15 +318,7 @@
             "tags": [
                 "Community Dashboard"
             ],
-            "requestBody": {
-            "content": {
-                "application/json": {
-                "schema": {
-                    "$ref": "#/components/schemas/community-dashboard"
-                    }
-                }
-            }
-            },
+
             "responses": {
 
                 "200": {
@@ -347,7 +342,7 @@
 
 
 
-     "/public-official-dashboard": {
+     "/api/public-official-dashboard": {
             "get": {
               "security": [
            {
@@ -357,15 +352,7 @@
             "tags": [
                 "Public Official Dashboard"
             ],
-            "requestBody": {
-            "content": {
-                "application/json": {
-                "schema": {
-                    "$ref": "#/components/schemas/public-official-dashboard"
-                    }
-                }
-            }
-            },
+
             "responses": {
 
                 "200": {
@@ -388,7 +375,7 @@
 
 
 
-     "/review-statistics-by-community": {
+     "/api/review-statistics-by-community": {
             "get": {
               "security": [
            {
@@ -398,15 +385,7 @@
             "tags": [
                 "Review Statistics Community"
             ],
-            "requestBody": {
-            "content": {
-                "application/json": {
-                "schema": {
-                    "$ref": "#/components/schemas/review-statistics-by-community"
-                    }
-                }
-            }
-            },
+
             "responses": {
 
                 "200": {
@@ -430,7 +409,7 @@
 
 
 
-      "/public-official-review": {
+      "/api/public-official-review": {
             "get": {
               "security": [
            {
@@ -440,15 +419,7 @@
             "tags": [
                 "Review Statistics Public"
             ],
-            "requestBody": {
-            "content": {
-                "application/json": {
-                "schema": {
-                    "$ref": "#/components/schemas/public-official-review"
-                    }
-                }
-            }
-            },
+
             "responses": {
 
                 "200": {
@@ -471,7 +442,7 @@
 
 
 
-      "/send-message-by-publicofficial": {
+      "/api/send-message-by-publicofficial": {
             "post": {
                "security": [
            {
@@ -510,7 +481,7 @@
         },
 
 
-     "/review-message-by-community": {
+     "/api/review-message-by-community": {
             "get": {
               "security": [
            {
@@ -520,15 +491,7 @@
             "tags": [
                 "Review Message Community"
             ],
-            "requestBody": {
-            "content": {
-                "application/json": {
-                "schema": {
-                    "$ref": "#/components/schemas/review-message-by-community"
-                    }
-                }
-            }
-            },
+
             "responses": {
 
                 "200": {
@@ -545,6 +508,37 @@
             }
             }
             },
-      }
+      },
+
+
+
+     "/api/get-communities": {
+            "get": {
+              "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
+            "tags": [
+                "Fetch Communities"
+            ],
+
+            "responses": {
+
+                "200": {
+                   "description": "OK",
+                    "schema": {
+                    "$ref": "#/components/schemas/get-communities"
+                    }
+                },
+                "404": {
+                   "description": "NOT FOUND",
+                    "schema": {
+                    "$ref": "#/components/schemas/get-communities"
+                    }
+            }
+            }
+            },
+        }
    }
 }
