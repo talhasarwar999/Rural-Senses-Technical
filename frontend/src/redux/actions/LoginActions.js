@@ -26,11 +26,13 @@ export const login = (username, password) => async (dispatch) => {
     };
     RemoveCookie("userInfo");
     RemoveCookie("user");
+    RemoveCookie("error");
+
     var bodyFormData = new FormData();
     bodyFormData.append("username", username);
     bodyFormData.append("password", password);
     const { data } = await axios.post(
-      ApiServer + "/user-signin",
+      ApiServer + "/api/user-signin",
       bodyFormData,
       config
     );
@@ -46,6 +48,7 @@ export const login = (username, password) => async (dispatch) => {
       payload: error.response.status,
     });
     console.log(error.response.status);
+    SetCookie("error", JSON.stringify(error.response.status));
   }
 };
 

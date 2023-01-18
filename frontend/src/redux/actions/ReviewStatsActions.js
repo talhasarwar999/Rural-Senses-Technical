@@ -23,7 +23,7 @@ export const ReviewStaticsAction = () => async (dispatch) => {
       },
     };
     const { data } = await axios.get(
-      ApiServer + "/review-statistics-by-community",
+      ApiServer + "/api/review-statistics-by-community",
       config
     );
     dispatch({

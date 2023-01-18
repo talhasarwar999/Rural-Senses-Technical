@@ -68,7 +68,9 @@ const Header = () => {
   //REDUX
   const dispatch = useDispatch();
   const logoutHandler = () => {
-    enqueueSnackbar("Logged Out Successfully");
+   enqueueSnackbar("Logged Out Successfully", {
+     variant: "error",
+   });
     dispatch(Logout());
   };
   return (

@@ -28,7 +28,7 @@ export const CreateUserAction =
       };
 
       const { data } = await axios.post(
-        ApiServer + "/add-user-by-admin",
+        ApiServer + "/api/add-user-by-admin",
         {
           username: username,
           password: password,

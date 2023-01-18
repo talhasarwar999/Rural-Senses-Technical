@@ -21,9 +21,8 @@ const Login = () => {
     GetCookie("user") === '"CommunitySocialWorker"' ? true : null
   );
   const [admin] = useState(GetCookie("user") === '"Admin"' ? true : null);
-  const [official] = useState(
-    GetCookie("user") === '"PublicOfficial"' ? true : null
-  );
+  const [error] = useState(GetCookie("error") ? true : null);
+  const [formErrors, setFormErrors] = useState({});
   //Snackbar
   const { enqueueSnackbar } = useSnackbar();
   // NAVIGATOR
@@ -32,27 +31,50 @@ const Login = () => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
   //CHECKING WHETHER USER IS AUTHENTICATED
+
   useEffect(() => {
-    if (admin) {
-      navigate("/create_user");
-    } else if (social) {
-      navigate("/upload");
-    } else if (official) {
-      navigate("/p-statistics");
-    } else {
-      navigate("/");
+    if (userInfo) {
+      if (admin) {
+        navigate("/create_user");
+      } else if (social) {
+        navigate("/upload");
+      } else {
+        enqueueSnackbar("SuccessFully Logged In", {
+          variant: "success",
+        });
+        navigate("/p-statistics");
+      }
     }
-  }, [admin, social, official, navigate]);
+    if (error) {
+      enqueueSnackbar("incorrect email or password", {
+        variant: "error",
+      });
+    }
+  }, [navigate, userInfo, enqueueSnackbar, error, admin, social]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    enqueueSnackbar(userInfo ? userInfo.msg : "Logged In Successfully");
-    dispatch(login(username, password)).then(() => {
-      window.location.reload();
-    });
+    dispatch(login(username, password));
+    setFormErrors(validate(userInfo));
   };
-
+const validate = () => {
+  const errors = {};
+  if (!username) {
+    // errors.email = "email required";
+    enqueueSnackbar("username required", {
+      variant: "error",
+    });
+  } 
+  if (!password) {
+    // errors.password = "password required";
+    enqueueSnackbar("Password required", {
+      variant: "error",
+    });
+  }
+  return errors;
+};
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <CssBaseline />
@@ -175,7 +197,9 @@ const Login = () => {
               sx={{ backgroundColor: "#E8F0FE" }}
               onChange={(e) => setPassword(e.target.value)}
             />
-
+            <Typography variant="subtitle2" component="p" color="error">
+              {formErrors.email}
+            </Typography>
             <Button
               type="submit"
               fullWidth
