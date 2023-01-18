@@ -11,7 +11,7 @@ import pandas as pd
 import hashlib
 import csv
 import os
-
+from flask_swagger_ui import get_swaggerui_blueprint
 
 
 
@@ -19,6 +19,7 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "e71e95b221e9c960889260960a244de2f0a9c7a8"   # Flask secret key
 app.config["MONGODB_DB"] = 'TestMongo'  # Database Name
+
 connect(
     'TestMongo',
     username='talhasarwar999',
@@ -26,6 +27,16 @@ connect(
     host='mongodb+srv://talhasarwa999:ali2061989@cluster0.sy4ye0l.mongodb.net/TestMongo?retryWrites=true&w=majority',
     port=10043
 )   # Databse Connection
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+SWAGGER_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "app"
+    }
+)
+app.register_blueprint(SWAGGER_BLUEPRINT, url_prefix = SWAGGER_URL)
 jwt = JWTManager(app)
 CORS(app)
 
@@ -245,6 +256,7 @@ def review_message_by_community():
                 "community": msg.community,
             })
     return jsonify(all_messages), 200
+
 
 
 
