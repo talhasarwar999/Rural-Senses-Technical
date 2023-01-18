@@ -47,11 +47,6 @@ const Login = () => {
         navigate("/p-statistics");
       }
     }
-    if (error) {
-      enqueueSnackbar("incorrect email or password", {
-        variant: "error",
-      });
-    }
   }, [navigate, userInfo, enqueueSnackbar, error, admin, social]);
 
   const handleSubmit = (e) => {
@@ -59,22 +54,27 @@ const Login = () => {
     dispatch(login(username, password));
     setFormErrors(validate(userInfo));
   };
-const validate = () => {
-  const errors = {};
-  if (!username) {
-    // errors.email = "email required";
-    enqueueSnackbar("username required", {
-      variant: "error",
-    });
-  } 
-  if (!password) {
-    // errors.password = "password required";
-    enqueueSnackbar("Password required", {
-      variant: "error",
-    });
-  }
-  return errors;
-};
+  const validate = () => {
+    const errors = {};
+    if (!username) {
+      // errors.email = "email required";
+      enqueueSnackbar("username required", {
+        variant: "error",
+      });
+    }
+    if (!password) {
+      // errors.password = "password required";
+      enqueueSnackbar("Password required", {
+        variant: "error",
+      });
+    }
+    if (error) {
+      enqueueSnackbar("incorrect email or password", {
+        variant: "error",
+      });
+    }
+    return errors;
+  };
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <CssBaseline />
