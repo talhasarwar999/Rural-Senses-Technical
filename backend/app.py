@@ -60,13 +60,9 @@ def user_signin():
                 elif user_from_db['role'] == 'PublicOfficial':
                     access_token = create_access_token(identity=user_from_db['username'])  # create jwt token
                     role = 'PublicOfficial'
-<<<<<<< HEAD
-                    return jsonify(access_token=access_token, role=role), 200
-=======
-                    return jsonify(access_token=access_token, role=role)
 
-        return jsonify({'msg': 'The username or password is incorrect'}), 400
->>>>>>> 87e543c0074c7e8ce588b1b77e04f63cf1460fbe
+                    return jsonify(access_token=access_token, role=role), 200
+
 
         return jsonify({'msg': 'The username or password is incorrect'}), 400
 
