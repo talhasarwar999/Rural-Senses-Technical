@@ -2,6 +2,7 @@ version: "3.10"
 services:
 
     backend:
+      image: backend_image
       build: ./backend/
       volumes:
         - ./backend:/code
@@ -9,8 +10,12 @@ services:
         - "8000:8000"
 
     frontend:
-      build: ./frontend/
+      image: frontend_image
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
       volumes:
         - ./frontend:/code
       ports:
+        - "80:80"
         - "3000:3000"
