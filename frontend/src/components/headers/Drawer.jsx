@@ -2,6 +2,7 @@ import React, { useState } from "react";
 //Material UI
 import {
   Button,
+  Divider,
   Drawer,
   IconButton,
   List,
@@ -14,6 +15,9 @@ import {
 } from "@mui/material";
 //Material UI Icon
 import MenuIcon from "@mui/icons-material/Menu";
+import UploadIcon from "@mui/icons-material/Upload";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import MessageIcon from "@mui/icons-material/Message";
 //Snackbar
 import { useSnackbar } from "notistack";
 //Redux
@@ -44,7 +48,9 @@ const DrawerComp = () => {
   //Redux
   const dispatch = useDispatch();
   const logoutHandler = () => {
-    enqueueSnackbar("Logged Out Successfully");
+    enqueueSnackbar("Logged Out Successfully", {
+      variant: "error",
+    });
     dispatch(Logout());
   };
 
@@ -65,8 +71,8 @@ const DrawerComp = () => {
           }}
         >
           <Typography
-            component="h1"
-            variant="h4"
+            component="h5"
+            variant="h5"
             sx={{
               fontWeight: "bold",
               color: "white",
@@ -79,6 +85,7 @@ const DrawerComp = () => {
           >
             Rural Senses
           </Typography>
+          <Divider sx={{ mt: 2, backgroundColor: "white" }} />
           <ListItemButton>
             <ListItemIcon>
               <StyledListItemText></StyledListItemText>
@@ -88,8 +95,17 @@ const DrawerComp = () => {
           {admin || official ? null : (
             <ListItemButton onClick={() => setOpenDrawer(false)}>
               <ListItemIcon>
-                <Link to="/upload">
-                  <StyledListItemText>upload</StyledListItemText>
+                <Link
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  to="/upload"
+                >
+                  <UploadIcon sx={{ color: "white", mr: 2 }} />{" "}
+                  <StyledListItemText>Upload</StyledListItemText>
                 </Link>
               </ListItemIcon>
             </ListItemButton>
@@ -97,7 +113,16 @@ const DrawerComp = () => {
           {admin || official ? null : (
             <ListItemButton onClick={() => setOpenDrawer(false)}>
               <ListItemIcon>
-                <Link to="/statistics">
+                <Link
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  to="/statistics"
+                >
+                  <QueryStatsIcon sx={{ color: "white", mr: 2 }} />{" "}
                   <StyledListItemText>Stats</StyledListItemText>
                 </Link>
               </ListItemIcon>
@@ -106,7 +131,16 @@ const DrawerComp = () => {
           {admin || official ? null : (
             <ListItemButton>
               <ListItemIcon onClick={() => setOpenDrawer(false)}>
-                <Link to="/message">
+                <Link
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  to="/message"
+                >
+                  <MessageIcon sx={{ color: "white", mr: 2 }} />{" "}
                   <StyledListItemText>Messages</StyledListItemText>
                 </Link>
               </ListItemIcon>
@@ -116,7 +150,9 @@ const DrawerComp = () => {
             <Button
               variant="outlined"
               color="inherit"
-              sx={{ mt: "30px" }}
+              sx={{
+                mt: "30px", ml: 2
+              }}
               onClick={logoutHandler}
             >
               Logout
