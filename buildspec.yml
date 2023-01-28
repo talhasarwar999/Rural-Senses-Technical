@@ -14,6 +14,7 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t backend_image ./backend/
+      - docker tag backend_image:latest $REPOSITORY_URI:latest
       - docker tag backend_image:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
